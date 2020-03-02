@@ -1,48 +1,58 @@
 public class Player {
-    private String playerName;
-    private int solved;
-    private int attempted;
-    private int correctGuesses;
+    private String username;
+    private int cryptogramsCompleted;
+    private int cryptogramsPlayed;
+    private int accuracy;
     private int totalGuesses;
 
     public Player(String playerName, int solved, int attempted, int correctGuesses, int totalGuesses) {
-        this.playerName = playerName;
-        this.solved = solved;
-        this.attempted = attempted;
-        this.correctGuesses = correctGuesses;
+        this.username = playerName;
+        this.cryptogramsCompleted = solved;
+        this.cryptogramsPlayed = attempted;
+        this.accuracy = correctGuesses;
         this.totalGuesses = totalGuesses;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    /*Placeholder*/
+    public void incrementCryptogramsCompleted(){
+
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    /*Placeholder*/
+    public void incrementCryptogramsPlayed(){
+
     }
 
-    public int getSolved() {
-        return solved;
+    public String getUsername() {
+        return username;
     }
 
-    public void setSolved(int solved) {
-        this.solved = solved;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public int getAttempted() {
-        return attempted;
+    public int getCryptogramsCompleted() {
+        return cryptogramsCompleted;
     }
 
-    public void setAttempted(int attempted) {
-        this.attempted = attempted;
+    public void setCryptogramsCompleted(int cryptogramsCompleted) {
+        this.cryptogramsCompleted = cryptogramsCompleted;
     }
 
-    public int getCorrectGuesses() {
-        return correctGuesses;
+    public int getCryptogramsPlayed() {
+        return cryptogramsPlayed;
     }
 
-    public void setCorrectGuesses(int correctGuesses) {
-        this.correctGuesses = correctGuesses;
+    public void setCryptogramsPlayed(int cryptogramsPlayed) {
+        this.cryptogramsPlayed = cryptogramsPlayed;
+    }
+
+    public int getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(int accuracy) {
+        this.accuracy = accuracy;
     }
 
     public int getTotalGuesses() {
