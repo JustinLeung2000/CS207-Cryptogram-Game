@@ -1,12 +1,30 @@
-import java.util.Map;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class Game {
-    private Map playerGameMapping;
+    private HashMap<Player, Cryptogram> playerGameMapping;
     private Player currentPlayer;
 
-    public Game(Map playerGameMapping, Player currentPlayer) {
+    public Game(HashMap<Player, Cryptogram> playerGameMapping, Player currentPlayer) {
         this.playerGameMapping = playerGameMapping;
         this.currentPlayer = currentPlayer;
+    }
+
+    public Game() {
+    }
+
+    boolean finished = false;
+    public void playGame(){
+        while(finished != true){
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram");
+            int selection = scan.nextInt();
+            //Throw error if not 1 or 2
+            Cryptogram crypt = generateCryptogram(selection);
+            for(int i=0; i<crypt.getOriginal().length(); i++) {
+                System.out.print(crypt.getEncrypted().charAt(i) + " ");
+            }
+        }
     }
 
     /*Placeholder*/
@@ -15,26 +33,33 @@ public class Game {
     }
 
     /*Placeholder*/
-    public Player loadPlayer(){
-        Player p = new Player("",0,0,0,0);
-        return p;
+    public void loadPlayer(){
+
     }
 
+
+
+    /*****/
     /*Placeholder*/
-    public void playGame(){
-
+    public Cryptogram generateCryptogram(int selection){
+        Cryptogram returnCrypt;
+        if (selection==1){
+            System.out.println("Letter Cryptogram Selected");
+            returnCrypt = new LetterCryptogram("Hello");
+        }
+        else
+            System.out.println("Letter Cryptogram Selected");
+            returnCrypt = new NumberCryptogram();
+        return returnCrypt;
     }
 
+    /*****/
     /*Placeholder*/
-    public void generateCryptogram(){
+    public void enterLetter(char plainLetter, char inputLetter){
 
     }
 
-    /*Placeholder*/
-    public void enterLetter(){
-
-    }
-
+    /*****/
     /*Placeholder*/
     public void undoLetter(){
 
@@ -55,20 +80,17 @@ public class Game {
 
     }
 
+    /*****/
     /*Placeholder*/
     public void showSolution(){
 
     }
 
-    public Game(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
-    }
-
-    public Map getPlayerGameMapping() {
+    public HashMap getPlayerGameMapping() {
         return playerGameMapping;
     }
 
-    public void setPlayerGameMapping(Map playerGameMapping) {
+    public void setPlayerGameMapping(HashMap<Player, Cryptogram> playerGameMapping) {
         this.playerGameMapping = playerGameMapping;
     }
 

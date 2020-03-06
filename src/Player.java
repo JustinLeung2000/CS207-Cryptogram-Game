@@ -15,12 +15,12 @@ public class Player {
 
     /*Placeholder*/
     public void incrementCryptogramsCompleted(){
-
+        cryptogramsCompleted++;
     }
 
     /*Placeholder*/
     public void incrementCryptogramsPlayed(){
-
+        cryptogramsPlayed++;
     }
 
     public String getUsername() {

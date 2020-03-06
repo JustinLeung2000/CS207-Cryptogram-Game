@@ -2,10 +2,10 @@ import java.util.ArrayList;
 
 public class Players {
 
-    private ArrayList<Players> allPlayers;
+    private ArrayList<Player> allPlayers;
     private String playersFile;
 
-    public Players(ArrayList<Players> allPlayers, String playersFile) {
+    public Players(ArrayList<Player> allPlayers, String playersFile) {
         this.allPlayers = allPlayers;
         this.playersFile = playersFile;
     }
@@ -40,11 +40,11 @@ public class Players {
 
     }
 
-    public ArrayList<Players> getAllPlayers() {
+    public ArrayList<Player> getAllPlayers() {
         return allPlayers;
     }
 
-    public void setAllPlayers(ArrayList<Players> allPlayers) {
+    public void setAllPlayers(ArrayList<Player> allPlayers) {
         this.allPlayers = allPlayers;
     }
 
