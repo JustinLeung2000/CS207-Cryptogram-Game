@@ -160,13 +160,41 @@ public class Game {
     /*Creates an appropriate cryptogram given the user input
      * letter cryptogram if 1
      * number cryptogram if 2*/
-    private Cryptogram generateCryptogram(char selection) {
+    private Cryptogram generateCryptogram(char selection) throws IOException {
         if (selection=='1') {
             System.out.println("Letter Cryptogram Selected");
-            return new LetterCryptogram("ABCCBA".toUpperCase().trim());
+            String phrase = null;
+            System.out.println("Please enter a phrase");
+            phrase = reader.readLine();
+            while (phrase.isEmpty()){
+                System.out.println("Phrase is invalid");
+                System.out.println("Please enter a phrase");
+                phrase = reader.readLine();
+            }
+
+            return new LetterCryptogram(phrase.toUpperCase().trim());
         } else {
             System.out.println("Number Cryptogram Selected");
-            return new NumberCryptogram("123321".trim());
+            String phrase = null;
+            Boolean numeric = true;
+            System.out.println("Please enter a phrase");
+            phrase = reader.readLine();
+            try {
+                Double num = Double.parseDouble(phrase);
+            } catch (NumberFormatException e) {
+                numeric = false;
+            }
+            while (phrase.isEmpty() || !numeric){
+                System.out.println("Phrase is invalid");
+                System.out.println("Please enter a phrase");
+                phrase = reader.readLine();
+                try {
+                    Double num = Double.parseDouble(phrase);
+                } catch (NumberFormatException e) {
+                    numeric = false;
+                }
+            }
+            return new NumberCryptogram(phrase.trim());
         }
     }
     /*Checks whether an input is valid based on the expected input*/
