@@ -5,10 +5,10 @@ import java.util.HashMap;
 
 public class LetterCryptogram extends Cryptogram {
 
-    public LetterCryptogram(String file) {
-        this.phrase = file;
+    public LetterCryptogram(String phrase) {
+        this.phrase = phrase;
         cryptogramAlphabet = generateMapping();
-        encrypted = encrypt(phrase);
+        encrypted = encrypt(this.phrase);
     }
 
     /*temporary*/

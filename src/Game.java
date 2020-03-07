@@ -7,17 +7,18 @@ import java.util.HashMap;
 public class Game {
     private HashMap<Player, Cryptogram> playerGameMapping;
     private Player currentPlayer;
+    private boolean gameFinished;
 
     public Game(HashMap<Player, Cryptogram> playerGameMapping, Player currentPlayer) {
         this.playerGameMapping = playerGameMapping;
         this.currentPlayer = currentPlayer;
+        gameFinished = false;
     }
 
     public Game() {
     }
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    boolean gameFinished = false;
     public void playGame() throws IOException {
         gameFinished = false;
         while (gameFinished != true) {
@@ -47,19 +48,18 @@ public class Game {
                 if(!currentAnswer.contains("-")){
                     printGameStatus(cryptogram, currentAnswer);
                     System.out.println("Would you like to enter your answer? (Y/N)");
-                    char response = reader.readLine().trim().toUpperCase().charAt(0);
+                    char response = checkInput(reader.readLine());
                     if(response == 'Y'){
                         //Player attempts++
                         if(cryptogram.getPhrase().equals(currentAnswer)){
                             System.out.println("Congratulations! You have completed the cryptogram!\nWould you like to play again? (Y/N)");
-                            response = reader.readLine().trim().toUpperCase().charAt(0);
+                            response = checkInput(reader.readLine());
                             if (response == 'N') {
                                 gameFinished = true;
                                 System.out.println("Goodbye!");
+                                gameFinished = true;
                             } else {
-                                if (response == 'Y') {
-                                    cryptoFinished = true;
-                                }
+                                cryptoFinished = true;
                             }
                         }
                         else{
@@ -70,8 +70,7 @@ public class Game {
             }
         }
     }
-    /*****/
-    /*Placeholder*/
+
     public String enterLetter(Cryptogram cryptogram, String currentAnswer, Character selectedChar, Character changeCharTo) throws IOException {
         int i = cryptogram.getEncrypted().indexOf(selectedChar);
         if('-' != currentAnswer.charAt(i)) {
@@ -112,24 +111,34 @@ public class Game {
     public Cryptogram generateCryptogram(String selection){
         if (selection.equals("1")){
             System.out.println("Letter Cryptogram Selected");
-            LetterCryptogram returnCrypt = new LetterCryptogram("ABCCBA".toUpperCase().trim());
-            return returnCrypt;
+            return new LetterCryptogram("ABCCBA".toUpperCase().trim());
         }
         else {
-            System.out.println("Letter Cryptogram Selected");
-            NumberCryptogram returnCrypt = new NumberCryptogram();
-            return returnCrypt;
+            System.out.println("Number Cryptogram Selected");
+            return new NumberCryptogram("123321".trim());
         }
 
     }
 
-
-
-//    private void checkInput(String input){
-//        if (input.trim().toLowerCase().equals("exit")){
-//            gameFinished = true;
-//        }
-//    }
+    private char checkInput(String input) throws IOException {
+        if(input.equals("exit")){
+            setGameFinished(false);
+        }
+        char formatedInput = input.trim().toUpperCase().charAt(0);
+        if(formatedInput != 'Y' || formatedInput != 'N'){
+            System.out.println(input + " is not a valid input. Please enter a valid input");
+            boolean validInput = false;
+            while(!validInput){
+                input = reader.readLine();
+                System.out.println(input + " is not a valid input. Please enter a valid input");
+                formatedInput = input.trim().toUpperCase().charAt(0);
+                if(formatedInput == 'Y' || formatedInput == 'N'){
+                    validInput = true;
+                }
+            }
+        }
+        return formatedInput;
+    }
 
 
 
@@ -190,5 +199,13 @@ public class Game {
 
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
+    }
+
+    public boolean isGameFinished() {
+        return gameFinished;
+    }
+
+    public void setGameFinished(boolean gameFinished) {
+        this.gameFinished = gameFinished;
     }
 }
