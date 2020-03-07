@@ -1,13 +1,11 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public abstract class Cryptogram {
 
-    protected String original; //phrase passed into cryptogram
+    protected String phrase; //phrase passed into cryptogram
     protected String encrypted;
-    //protected String cryptogramAlphabet;
-
-    public Cryptogram(String phrase) {
-        this.original = phrase;
-        encrypted = encrypt(phrase);
-    }
+    protected HashMap<Character, Character> cryptogramAlphabet;
 
     /*temporary*/
     public Cryptogram() {
@@ -17,27 +15,23 @@ public abstract class Cryptogram {
 
     }
 
-    public String getOriginal() {
-        return original;
-    }
+    public abstract String getEncrypted();
 
-    public void setOriginal(String original) {
-        this.original = original;
-    }
+    public abstract String getPhrase();
 
-    public String getEncrypted() {
-        return encrypted;
-    }
+    public abstract HashMap<Character, Character> getCryptogramAlphabet();
 
-    public void setEncrypted(String encrypted) {
-        this.encrypted = encrypted;
-    }
-
-    protected abstract String encrypt(String input);
-
-//    public HashMap<String, String> generateMapping (){
-//        return null;
+//    }
+//    protected abstract HashMap<Character, Character> generateMapping();
+//
+//    public abstract ArrayList<Character> populateAlphabet();
+//
+//    public String getPhrase() {
+//        return phrase;
+//    }
+//
+//    public void setPhrase(String phrase) {
+//        this.phrase = phrase;
 //    }
 
-    //public void generateAlphabet(){}
 }
