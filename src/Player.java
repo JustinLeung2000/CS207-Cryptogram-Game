@@ -5,22 +5,28 @@ public class Player {
     private int accuracy;
     private int totalGuesses;
 
-    public Player(String playerName, int solved, int attempted, int correctGuesses, int totalGuesses) {
-        this.username = playerName;
-        this.cryptogramsCompleted = solved;
-        this.cryptogramsPlayed = attempted;
-        this.accuracy = correctGuesses;
+    public Player(String username, int cryptogramsCompleted, int cryptogramsPlayed, int accuracy, int totalGuesses) {
+        this.username = username;
+        this.cryptogramsCompleted = cryptogramsCompleted;
+        this.cryptogramsPlayed = cryptogramsPlayed;
+        this.accuracy = accuracy;
         this.totalGuesses = totalGuesses;
     }
 
     /*Placeholder*/
     public void incrementCryptogramsCompleted(){
         cryptogramsCompleted++;
+        updateAccuracy();
     }
 
     /*Placeholder*/
     public void incrementCryptogramsPlayed(){
         cryptogramsPlayed++;
+    }
+
+    public void incrementTotalGuesses(){
+        totalGuesses++;
+        updateAccuracy();
     }
 
     public String getUsername() {
@@ -61,5 +67,15 @@ public class Player {
 
     public void setTotalGuesses(int totalGuesses) {
         this.totalGuesses = totalGuesses;
+    }
+
+    public String printStats(){
+        return (username + " Stats:\n  Cryptograms Played: " + cryptogramsPlayed +
+                "\n  Cryptograms Completed: " + cryptogramsCompleted + "\n   Total Guesses: " + totalGuesses +
+                "\n   Accuracy: " + accuracy + "%");
+    }
+
+    private void updateAccuracy(){
+        accuracy = (cryptogramsCompleted*100)/(totalGuesses);
     }
 }

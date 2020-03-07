@@ -4,12 +4,12 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 
 public class Game {
-    private HashMap<Player, Cryptogram> playerGameMapping;
+//    private HashMap<Player, Cryptogram> playerGameMapping;
     private Player currentPlayer;
     private boolean gameFinished;
 
-    public Game(HashMap<Player, Cryptogram> playerGameMapping, Player currentPlayer) {
-        this.playerGameMapping = playerGameMapping;
+    public Game(Player currentPlayer) {
+  //      this.playerGameMapping = playerGameMapping;
         this.currentPlayer = currentPlayer;
         gameFinished = false;
     }
@@ -32,6 +32,7 @@ public class Game {
             }
             boolean cryptoFinished = false; //controls whether the current cryptogram is finished
             while (cryptoFinished != true) {
+                currentPlayer.getCryptogramsPlayed();
                 printGameStatus(cryptogram, currentAnswer);
                 System.out.println("Type the character you wish to select followed by your answer");
                 System.out.print("Character > ");
@@ -42,16 +43,15 @@ public class Game {
                     currentAnswer = enterLetter(cryptogram, currentAnswer, selectedChar, changeCharTo); //updates the current answer
                 } else {
                     System.out.println("The encrypted phrase does not contain this character, please enter another character");
-                    /*Player attempts++*/
                 }
                 if (!currentAnswer.contains("-")) { //iff all empty spaces in the answer have been filled in by the player...
                     printGameStatus(cryptogram, currentAnswer);
                     System.out.println("Would you like to enter your answer? (Y/N)");
                     char response = checkValidInput(reader.readLine(), "Y/N"); //...the player will be prompted to say whether they would like to enter their answer
                     if (response == 'Y') {
-                        //Player attempts++
+                        currentPlayer.incrementTotalGuesses();
                         if (cryptogram.getPhrase().equals(currentAnswer)) {
-                            //Player cryptogramsCompleted++
+                            currentPlayer.incrementCryptogramsCompleted();
                             System.out.println("Congratulations! You have completed the cryptogram!\nWould you like to play again? (Y/N)");
                             response = checkValidInput(reader.readLine(), "Y/N");
                             if (response == 'N') { //if the player does not want to play again the game will end
@@ -68,6 +68,8 @@ public class Game {
                     }
                 }
             }
+            currentPlayer.incrementCryptogramsPlayed();
+            System.out.println(currentPlayer.printStats());
         }
     }
 
@@ -84,7 +86,6 @@ public class Game {
                         currentAnswer = currentAnswer.substring(0, j) + changeCharTo + currentAnswer.substring(j + 1);
                     }
                 }
-                //player attempts ++
             }
         } else {
             for (int j = 0; j < currentAnswer.length(); j++) { // for all characters of current answer
@@ -92,7 +93,6 @@ public class Game {
                     currentAnswer = currentAnswer.substring(0, j) + changeCharTo + currentAnswer.substring(j + 1);
                 }
             }
-            //player attempts ++
         }
         return currentAnswer;
     }
@@ -133,15 +133,13 @@ public class Game {
 
     }
 
-
-
-    public HashMap getPlayerGameMapping() {
-        return playerGameMapping;
-    }
-
-    public void setPlayerGameMapping(HashMap<Player, Cryptogram> playerGameMapping) {
-        this.playerGameMapping = playerGameMapping;
-    }
+//    public HashMap getPlayerGameMapping() {
+//        return playerGameMapping;
+//    }
+//
+//    public void setPlayerGameMapping(HashMap<Player, Cryptogram> playerGameMapping) {
+//        this.playerGameMapping = playerGameMapping;
+//    }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
@@ -165,7 +163,7 @@ public class Game {
     private Cryptogram generateCryptogram(char selection) {
         if (selection=='1') {
             System.out.println("Letter Cryptogram Selected");
-            return new LetterCryptogram("ABC CBA".toUpperCase().trim());
+            return new LetterCryptogram("ABCCBA".toUpperCase().trim());
         } else {
             System.out.println("Number Cryptogram Selected");
             return new NumberCryptogram("123321".trim());
@@ -173,9 +171,9 @@ public class Game {
     }
     /*Checks whether an input is valid based on the expected input*/
     private char checkValidInput(String input, String constraint) throws IOException {
-        input = input.trim();
-        if (input.equals("exit")) {
-            setGameFinished(false);
+        input = input.trim().toUpperCase();
+        if (input.equals("EXIT")) {
+            setGameFinished(true);
         }
 
         if(input.equals("")){
@@ -187,14 +185,14 @@ public class Game {
                 if (formatedInput != 'Y' && formatedInput != 'N') {
                     System.out.print(input + " is not a valid input. Please enter a valid input (Y/N)\nEnter Choice > ");
                     input = reader.readLine();
-                    checkValidInput(input, constraint);
+                    formatedInput = checkValidInput(input, constraint);
                 }
                 break;
             case "1/2":
                 if (formatedInput != '1' && formatedInput != '2') {
                     System.out.print(input + " is not a valid input. Please enter a valid input (1 or 2)\nEnter Choice > ");
                     input = reader.readLine();
-                    checkValidInput(input, constraint);
+                    formatedInput = checkValidInput(input, constraint);
                 }
                 break;
 
@@ -203,53 +201,6 @@ public class Game {
         }
         return formatedInput;
     }
-
-//    /*Checks whether an input is valid based on the expected input*/
-//    private char checkValidInput(String input, String constraint) throws IOException {
-//        input = input.trim();
-//        if (input.equals("exit")) {
-//            setGameFinished(false);
-//        }
-//
-//        if(input.equals("")){
-//            input = "This";
-//        }
-//        char formatedInput = input.trim().toUpperCase().charAt(0);
-//        switch (constraint){
-//            case "Y/N":
-//                if (formatedInput != 'Y' && formatedInput != 'N') {
-//                    System.out.println(input + " is not a valid input. Please enter a valid input");
-//                    boolean validInput = false;
-//                    while (!validInput) {
-//                        input = reader.readLine();
-//                        System.out.println(input + " is not a valid input. Please enter a valid input");
-//                        formatedInput = input.trim().toUpperCase().charAt(0);
-//                        if (formatedInput == 'Y' || formatedInput == 'N') {
-//                            validInput = true;
-//                        }
-//                    }
-//                }
-//                break;
-//            case "1/2":
-//                if (formatedInput != '1' && formatedInput != '2') {
-//                    System.out.println(input + " is not a valid input. Please enter a valid input (1 or 2)");
-//                    boolean validInput = false;
-//                    while (!validInput) {
-//                        input = reader.readLine();
-//                        System.out.println(input + " is not a valid input. Please enter a valid input (1 or 2)");
-//                        formatedInput = input.trim().toUpperCase().charAt(0);
-//                        if (formatedInput == '1' || formatedInput == '2') {
-//                            validInput = true;
-//                        }
-//                    }
-//                }
-//                break;
-//
-//            default:
-//                System.out.println("Error: invalid constraint passed into Game checkValidInput()");
-//        }
-//        return formatedInput;
-//    }
 
     private void printGameStatus(Cryptogram crypt, String currentAnswer) {
         for (int i = 0; i < crypt.getEncrypted().length(); i++) {
