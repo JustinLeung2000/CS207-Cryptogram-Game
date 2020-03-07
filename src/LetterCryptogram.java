@@ -11,12 +11,9 @@ public class LetterCryptogram extends Cryptogram {
         encrypted = encrypt(this.phrase);
     }
 
-    /*temporary*/
     public LetterCryptogram() {
 
     }
-
-
 
     public char getPlainLetter(char cryptoLetter) {
         return '-';

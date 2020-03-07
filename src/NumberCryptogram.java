@@ -61,6 +61,7 @@ public class NumberCryptogram extends Cryptogram {
         }
         return encrypted;
     }
+
     public void getPlainLetter(int cryptoValue) {
 
     }
