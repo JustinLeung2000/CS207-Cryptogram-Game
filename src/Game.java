@@ -128,6 +128,9 @@ public class Game {
                 }
             }
         }
+        else {
+            System.out.println("You have not mapped this letter. Please select a letter that you have mapped");
+        }
         return currentAnswer;
     }
 
