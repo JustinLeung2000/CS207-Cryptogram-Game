@@ -35,6 +35,7 @@ public class Game {
                 currentPlayer.getCryptogramsPlayed();
                 printGameStatus(cryptogram, currentAnswer);
                 System.out.println("Type the character you wish to select followed by your answer");
+                System.out.println("To undo a inputted letter, just select the letter again an replace with '-'\n");
                 System.out.print("Character > ");
                 Character selectedChar = reader.readLine().toUpperCase().trim().charAt(0); //selectedChar holds which character from the encrypted phrase the player has selected
                 if (cryptogram.getEncrypted().contains(selectedChar.toString())) {
