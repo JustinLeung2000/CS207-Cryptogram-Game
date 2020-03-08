@@ -1,3 +1,5 @@
+import java.sql.SQLOutput;
+
 public class Player {
     private String username;
     private int cryptogramsCompleted;
@@ -69,8 +71,8 @@ public class Player {
         this.totalGuesses = totalGuesses;
     }
 
-    public String printStats(){
-        return (username + " Stats:\n  Cryptograms Played: " + cryptogramsPlayed +
+    public void printStats(){
+        System.out.println(username + " Stats:\n  Cryptograms Played: " + cryptogramsPlayed +
                 "\n  Cryptograms Completed: " + cryptogramsCompleted + "\n   Total Guesses: " + totalGuesses +
                 "\n   Accuracy: " + accuracy + "%");
     }
