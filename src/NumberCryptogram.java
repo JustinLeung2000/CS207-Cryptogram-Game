@@ -57,7 +57,13 @@ public class NumberCryptogram extends Cryptogram {
     public String encrypt(String inputPhrase) {
         String encrypted = "";
         for(int i = 0; i<inputPhrase.length(); i++){
-            encrypted = encrypted + cryptogramAlphabet.get(inputPhrase.charAt(i));
+            try{
+                char nextLetter = cryptogramAlphabet.get(inputPhrase.charAt(i));
+                encrypted = encrypted + nextLetter;
+            }
+            catch (NullPointerException n){
+                encrypted = encrypted + " ";
+            }
         }
         return encrypted;
     }

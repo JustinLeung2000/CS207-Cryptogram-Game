@@ -226,24 +226,13 @@ public class Game {
         } else {
             System.out.println("Number Cryptogram Selected");
             String phrase;
-            boolean numeric = true;
             System.out.println("Please enter a phrase");
-            phrase = reader.readLine();
-            try {
-                Double num = Double.parseDouble(phrase);
-            } catch (NumberFormatException e) {
-                numeric = false;
-            }
-            while (phrase.isEmpty() || !numeric) {
+            phrase = checkValidInput(reader.readLine(), "General");
+            while (phrase.isEmpty()) {
                 System.out.println("Phrase is invalid");
                 System.out.println("Please enter a phrase");
                 phrase = reader.readLine();
-                try {
-                    Double num = Double.parseDouble(phrase);
-                } catch (NumberFormatException e) {
-                    numeric = false;
                 }
-            }
             return new NumberCryptogram(phrase.trim());
         }
     }
