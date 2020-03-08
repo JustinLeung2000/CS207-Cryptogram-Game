@@ -2,14 +2,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class Game {
-//    private HashMap<Player, Cryptogram> playerGameMapping;
+    //    private HashMap<Player, Cryptogram> playerGameMapping;
     private Player currentPlayer;
     private boolean gameFinished;
 
     public Game(Player currentPlayer) {
-  //      this.playerGameMapping = playerGameMapping;
+        //      this.playerGameMapping = playerGameMapping;
         this.currentPlayer = currentPlayer;
         gameFinished = false;
     }
@@ -20,57 +21,80 @@ public class Game {
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public void playGame() throws IOException {
-        gameFinished = false;
-        while (gameFinished != true) { //controlls whether the game is being played, multiple cryptograms can be played in a single game
-            System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\nEnter Choice >");
-            char selection = checkValidInput(reader.readLine(), "1/2");
-            // add method to return error message if not 1 or 2
-            Cryptogram cryptogram = generateCryptogram(selection); //creates the type of cryptogram specified by the player
-            String currentAnswer = "";
-            for (int i = 0; i < cryptogram.getPhrase().length(); i++) { //fills the current answer with dashes to represent unspecified characters
-                currentAnswer = currentAnswer + "-";
-            }
-            boolean cryptoFinished = false; //controls whether the current cryptogram is finished
-            while (cryptoFinished != true) {
-                currentPlayer.getCryptogramsPlayed();
-                printGameStatus(cryptogram, currentAnswer);
-                System.out.println("Type the character you wish to select followed by your answer");
-                System.out.println("To undo a inputted letter, just select the letter again an replace with '-'\n");
-                System.out.print("Character > ");
-                Character selectedChar = reader.readLine().toUpperCase().trim().charAt(0); //selectedChar holds which character from the encrypted phrase the player has selected
-                if (cryptogram.getEncrypted().contains(selectedChar.toString())) {
-                    System.out.print("Change to > ");
-                    char changeCharTo = reader.readLine().toUpperCase().trim().charAt(0); //changeCharTo holds the character which the player wants to insert into their answer
-                    currentAnswer = enterLetter(cryptogram, currentAnswer, selectedChar, changeCharTo); //updates the current answer
-                } else {
-                    System.out.println("The encrypted phrase does not contain this character, please enter another character");
-                }
-                if (!currentAnswer.contains("-")) { //iff all empty spaces in the answer have been filled in by the player...
-                    printGameStatus(cryptogram, currentAnswer);
-                    System.out.println("Would you like to enter your answer? (Y/N)");
-                    char response = checkValidInput(reader.readLine(), "Y/N"); //...the player will be prompted to say whether they would like to enter their answer
-                    if (response == 'Y') {
+        System.out.print("Welcome to Friday Team 1's Cryptogram game!\nNote that this cryptogram game is case sensitive\nPlease select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\nEnter Choice >");
+        char selection = checkValidInput(reader.readLine(), "1/2").charAt(0);
+        Cryptogram cryptogram = generateCryptogram(selection);
+        currentPlayer.incrementCryptogramsPlayed();
+        Stack<String> stack = new Stack();
+        String currentAnswer = "";
+        for (int i = 0; i < cryptogram.getPhrase().length(); i++) { //fills the current answer with dashes to represent unspecified characters
+            currentAnswer = currentAnswer + "-";
+        }
+        stack.push(currentAnswer);
+        while(gameFinished == false){
+            printGameStatus(cryptogram, currentAnswer);
+            System.out.print("Enter one of the following options:\n   Enter\n   Undo\n   Check\n   Stats\n   Exit\n>");
+            String input = checkValidInput(reader.readLine(), "General");
+            switch(input){
+                case "enter":
+                    System.out.println("Type the character you wish to select followed by your answer");
+                    System.out.print("Character > ");
+                    Character selectedChar = checkValidInput(reader.readLine(), "General").charAt(0); //selectedChar holds which character from the encrypted phrase the player has selected
+                    if (cryptogram.getEncrypted().contains(selectedChar.toString())) {
+                        System.out.print("Change to > ");
+                        char changeCharTo = checkValidInput(reader.readLine(), "General").charAt(0); //changeCharTo holds the character which the player wants to insert into their answer
+                        currentAnswer = enterLetter(cryptogram, currentAnswer, selectedChar, changeCharTo); //updates the current answer
+                        stack.push(currentAnswer);
+                    }
+                    else {
+                        System.out.println("The encrypted phrase does not contain this character, please enter another character");
+                    }
+                    break;
+                case "undo":
+                    if(!stack.empty()) {
+                        stack.pop();
+                        currentAnswer = stack.peek();
+                    }
+                    break;
+                case "check":
+                    if (!currentAnswer.contains("-")) { //iff all empty spaces in the answer have been filled in by the player...
                         currentPlayer.incrementTotalGuesses();
                         if (cryptogram.getPhrase().equals(currentAnswer)) {
                             currentPlayer.incrementCryptogramsCompleted();
                             System.out.println("Congratulations! You have completed the cryptogram!\nWould you like to play again? (Y/N)");
-                            response = checkValidInput(reader.readLine(), "Y/N");
+                            char response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
                             if (response == 'N') { //if the player does not want to play again the game will end
                                 System.out.println("Goodbye!");
                                 gameFinished = true;
-                                cryptoFinished = true;
                             } else { //if the layer does want to play again the current cryptogram will end and a new cryptogram will begin
-                                cryptoFinished = true;
+                                System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\nEnter Choice >");
+                                selection = checkValidInput(reader.readLine(), "1/2").charAt(0);
+                                cryptogram = generateCryptogram(selection);
+                                currentPlayer.incrementCryptogramsPlayed();
+                                currentAnswer = "";
+                                for (int i = 0; i < cryptogram.getPhrase().length(); i++) { //fills the current answer with dashes to represent unspecified characters
+                                    currentAnswer = currentAnswer + "-";
+                                }
                             }
                         } else {
-                            //Player incorrect attempts++
                             System.out.println("Incorrect. Please try again.");
                         }
                     }
-                }
+                    else{
+                        System.out.println("There are still empty spaces in your answer. PLease enter more letters into your answer");
+                    }
+                    break;
+                case "exit":
+                    gameFinished = true;
+                    System.out.println("Goodbye!");
+                    break;
+                case "stats":
+                    currentPlayer.printStats();
+                    break;
+                default:
+                    System.out.println(input + " is not a valid input. Please enter a valid input");
+                    break;
             }
-            currentPlayer.incrementCryptogramsPlayed();
-            System.out.println(currentPlayer.printStats());
         }
     }
 
@@ -78,7 +102,7 @@ public class Game {
         int i = cryptogram.getEncrypted().indexOf(selectedChar);
         if ('-' != currentAnswer.charAt(i)) { //if the player has already entered a plain letter...
             System.out.println("You have already entered a letter into this slot, are you sure you want to override it? (Y/N)");
-            char response = checkValidInput(reader.readLine(), "Y/N"); //...the player will be asked if they want to override their previous answer
+            char response = checkValidInput(reader.readLine(), "Y/N").charAt(0); //...the player will be asked if they want to override their previous answer
             if (response == 'N') {
                 System.out.println("Ok, character not changed");
             } else {
@@ -199,9 +223,9 @@ public class Game {
         }
     }
     /*Checks whether an input is valid based on the expected input*/
-    private char checkValidInput(String input, String constraint) throws IOException {
+    private String checkValidInput(String input, String constraint) throws IOException {
         input = input.trim().toUpperCase();
-        if (input.equals("EXIT")) {
+        if (input.toLowerCase().equals("exit")) {
             setGameFinished(true);
         }
 
@@ -214,21 +238,27 @@ public class Game {
                 if (formatedInput != 'Y' && formatedInput != 'N') {
                     System.out.print(input + " is not a valid input. Please enter a valid input (Y/N)\nEnter Choice > ");
                     input = reader.readLine();
-                    formatedInput = checkValidInput(input, constraint);
+                    input = checkValidInput(input, constraint);
                 }
                 break;
             case "1/2":
                 if (formatedInput != '1' && formatedInput != '2') {
                     System.out.print(input + " is not a valid input. Please enter a valid input (1 or 2)\nEnter Choice > ");
                     input = reader.readLine();
-                    formatedInput = checkValidInput(input, constraint);
+                    input = checkValidInput(input, constraint);
                 }
                 break;
-
+            case "General":
+                if(input.equals("")){
+                    System.out.println("Please enter a valid input");
+                    input = reader.readLine();
+                    input = checkValidInput(input, constraint);
+                }
+                break;
             default:
                 System.out.println("Error: invalid constraint passed into Game checkValidInput()");
         }
-        return formatedInput;
+        return input;
     }
 
     private void printGameStatus(Cryptogram crypt, String currentAnswer) {
