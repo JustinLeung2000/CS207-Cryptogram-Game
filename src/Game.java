@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -8,6 +6,7 @@ public class Game {
     //    private HashMap<Player, Cryptogram> playerGameMapping;
     private Player currentPlayer;
     private boolean gameFinished;
+    private String currentAnswer;
 
     public Game(Player currentPlayer) {
         //      this.playerGameMapping = playerGameMapping;
@@ -21,11 +20,16 @@ public class Game {
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public void playGame() throws IOException {
-        System.out.print("Welcome to Friday Team 1's Cryptogram game!\nPlease select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\nEnter Choice >");
-        char selection = checkValidInput(reader.readLine(), "1/2").charAt(0);
+        System.out.print("Welcome to Friday Team 1's Cryptogram game!\nPlease select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number Cryptogram\n3 to load Cryptogram\nEnter Choice >");
+        char selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
         Cryptogram cryptogram = generateCryptogram(selection);
+        if(cryptogram.getPhrase() == "ERROR"){
+            System.out.print("No cryptograms saved.\nPlease select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number Cryptogram\nEnter Choice >");
+            selection = checkValidInput(reader.readLine(), "1/2").charAt(0);
+            cryptogram = generateCryptogram(selection);
+        }
         currentPlayer.incrementCryptogramsPlayed();
-        String currentAnswer = "";
+        currentAnswer = "";
         for (int i = 0; i < cryptogram.getPhrase().length(); i++) { //fills the current answer with dashes to represent unspecified characters
             if (cryptogram.getPhrase().charAt(i) == ' ') {
                 currentAnswer = currentAnswer + " ";
@@ -35,7 +39,7 @@ public class Game {
         }
         while (!gameFinished) {
             printGameStatus(cryptogram, currentAnswer);
-            System.out.print("Enter one of the following options:\n   Enter\n   Undo\n   Check\n   Stats\n   Exit\n>");
+            System.out.print("Enter one of the following options:\n   Enter\n   Undo\n   Check\n   Stats\n   Save\n   Exit\n>");
             String input = checkValidInput(reader.readLine(), "General");
             switch (input) {
                 case "ENTER":
@@ -60,9 +64,9 @@ public class Game {
                         if (response == 'N') { //if the player does not want to play again the game will end
                             System.out.println("Goodbye!");
                             gameFinished = true;
-                        } else { //if the layer does want to play again the current cryptogram will end and a new cryptogram will begin
-                            System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\nEnter Choice >");
-                            selection = checkValidInput(reader.readLine(), "1/2").charAt(0);
+                        } else { //if the player does want to play again the current cryptogram will end and a new cryptogram will begin
+                            System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\n3 to load Letter Cryptogram\n4 to load Number Cryptogram\nEnter Choice >");
+                            selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
                             cryptogram = generateCryptogram(selection);
                             currentPlayer.incrementCryptogramsPlayed();
                             currentAnswer = "";
@@ -81,6 +85,10 @@ public class Game {
                     break;
                 case "STATS":
                     currentPlayer.printStats();
+                    break;
+                case "SAVE":
+                    System.out.println("Saving cryptogram...");
+                    cryptogram.saveCryptogram(currentPlayer.getUsername(), currentAnswer, selection);
                     break;
                 default:
                     System.out.println(input + " is not a valid input. Please enter a valid input");
@@ -216,25 +224,31 @@ public class Game {
             String phrase;
             System.out.println("Please enter a phrase");
             phrase = reader.readLine();
-            while (phrase.isEmpty()) {
+            while (phrase.isEmpty() || phrase.trim().isEmpty()) {
                 System.out.println("Phrase is invalid");
                 System.out.println("Please enter a phrase");
                 phrase = reader.readLine();
             }
 
             return new LetterCryptogram(phrase.toUpperCase().trim());
-        } else {
+        } else if (selection == '2') {
             System.out.println("Number Cryptogram Selected");
             String phrase;
             System.out.println("Please enter a phrase");
             phrase = checkValidInput(reader.readLine(), "General");
-            while (phrase.isEmpty()) {
+            while (phrase.isEmpty() || phrase.trim().isEmpty()) {
                 System.out.println("Phrase is invalid");
                 System.out.println("Please enter a phrase");
                 phrase = reader.readLine();
                 }
             return new NumberCryptogram(phrase.trim());
         }
+
+        else {
+            System.out.println("Loading Cryptogram");
+            return loadCryptogram(currentPlayer.getUsername());
+        }
+
     }
 
     /*Checks whether an input is valid based on the expected input*/
@@ -247,24 +261,31 @@ public class Game {
         if (input.equals("")) {
             input = "This";
         }
-        char formatedInput = input.trim().toUpperCase().charAt(0);
+        char formattedInput = input.trim().toUpperCase().charAt(0);
         switch (constraint) {
             case "Y/N":
-                if (formatedInput != 'Y' && formatedInput != 'N') {
+                if (formattedInput != 'Y' && formattedInput != 'N') {
                     System.out.print(input + " is not a valid input. Please enter a valid input (Y/N)\nEnter Choice > ");
                     input = reader.readLine();
                     input = checkValidInput(input, constraint);
                 }
                 break;
+            case "1/2/3":
+                if (formattedInput != '1' && formattedInput != '2' && formattedInput != '3') {
+                    System.out.print(input + " is not a valid input. Please enter a valid input (1,2,3)\nEnter Choice > ");
+                    input = reader.readLine();
+                    input = checkValidInput(input, constraint);
+                }
+                break;
             case "1/2":
-                if (formatedInput != '1' && formatedInput != '2') {
-                    System.out.print(input + " is not a valid input. Please enter a valid input (1 or 2)\nEnter Choice > ");
+                if (formattedInput != '1' && formattedInput != '2') {
+                    System.out.print(input + " is not a valid input. Please enter a valid input (1,2)\nEnter Choice > ");
                     input = reader.readLine();
                     input = checkValidInput(input, constraint);
                 }
                 break;
             case "General":
-                if (input.equals("")) {
+                if (input.isEmpty()) {
                     System.out.println("Please enter a valid input");
                     input = reader.readLine();
                     input = checkValidInput(input, constraint);
@@ -289,5 +310,30 @@ public class Game {
             System.out.print(currentAnswer.charAt(i) + " ");
         }
         System.out.println();
+    }
+
+    private Cryptogram loadCryptogram(String playerName) throws IOException {
+        String line;
+        File csv = new File("src/Cryptograms.csv");
+        if (csv.isFile()) {
+            BufferedReader csvReader = new BufferedReader(new FileReader(csv));
+            while((line = csvReader.readLine()) != null){
+                String[] cryptoData = line.split(",");
+                if(cryptoData[0].compareTo(playerName) == 0){
+                    csvReader.close();
+                    if(cryptoData[1] == "Letter"){
+                        currentAnswer = cryptoData[4];
+                        return new LetterCryptogram(cryptoData[2], cryptoData[3]);
+                    }
+                    else{
+                        currentAnswer = cryptoData[4];
+                        return new NumberCryptogram(cryptoData[2], cryptoData[3]);
+                    }
+                }
+            }
+            csvReader.close();
+            return new LetterCryptogram();
+        }
+        return new LetterCryptogram();
     }
 }
