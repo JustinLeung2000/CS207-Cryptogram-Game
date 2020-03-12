@@ -1,28 +1,80 @@
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 
 public class Players {
 
-    private ArrayList<Player> allPlayers;
+    public static ArrayList<Player> allPlayers;
     private String playersFile;
 
-    public Players(ArrayList<Player> allPlayers, String playersFile) {
-        this.allPlayers = allPlayers;
-        this.playersFile = playersFile;
+    public static void loadPlayers(String fileName){
+        String username;
+        int cryptogramsPlayed;
+        int cryptogramsCompleted;
+        int totalGuesses;
+        int accuracy;
+        try {
+            BufferedReader bReader = new BufferedReader(new FileReader(fileName));
+            String line;
+            while ((line = bReader.readLine()) != null) {
+                Scanner s = new Scanner(line);
+                username = s.next();
+                cryptogramsPlayed = s.nextInt();
+                cryptogramsCompleted = s.nextInt();
+                totalGuesses = s.nextInt();
+                accuracy = s.nextInt();
+
+                Player player = new Player(username, cryptogramsPlayed, cryptogramsCompleted, totalGuesses, accuracy);
+                allPlayers.add(player);
+            }
+            bReader.close();
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("Player Data file not found");
+        }
+        catch (IOException e) {
+            System.out.println("Unable to read player data file");
+        }
+
     }
 
-    /*Placeholder*/
     public void addPlayer(Player p){
+        try (FileWriter fWriter = new FileWriter("src/PlayerData.txt", true);
+             BufferedWriter bWriter = new BufferedWriter(fWriter)) {
+            bWriter.write(p.toString());
+            bWriter.newLine();
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("Player Data file not found");
+        }
+        catch (IOException e) {
+            System.out.println("Unable to write to player data file");
+        }
+    }
+
+    public void savePlayers(String fileName){
+        try (FileWriter fWriter = new FileWriter(fileName);
+            BufferedWriter bWriter = new BufferedWriter(fWriter)) {
+            for (Player p : allPlayers) {
+                bWriter.write(p.toString());
+                bWriter.newLine();
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Unable to save to player data file");
+        }
 
     }
 
-    /*Placeholder*/
-    public void savePlayers(){
-
-    }
-
-    /*Placeholder*/
-    public void findPlayer(Player p){
-
+    public static Player findPlayer(String currentUser){
+        for (Player p : allPlayers) {
+            if(p.getUsername().equals(currentUser)) {
+                System.out.println("Your player data has been found");
+                return p;
+            }
+        }
+        return null;
     }
 
     /*Placeholder*/
