@@ -39,7 +39,7 @@ public class Game {
         }
         while (!gameFinished) {
             printGameStatus(cryptogram, currentAnswer);
-            System.out.print("Enter one of the following options:\n   Enter\n   Undo\n   Check\n   Stats\n   Save\n   Exit\n>");
+            System.out.print("Enter one of the following options:\n   Enter\n   Undo\n   Check\n   Stats\n   Save\n   Solve\n   Exit\n>");
             String input = checkValidInput(reader.readLine(), "General");
             switch (input) {
                 case "ENTER":
@@ -89,6 +89,23 @@ public class Game {
                 case "SAVE":
                     System.out.println("Saving cryptogram...");
                     cryptogram.saveCryptogram(currentPlayer.getUsername(), currentAnswer, selection);
+                    break;
+                case "SOLVE":
+                    System.out.println("The solution to the crytogram: " + cryptogram.encrypted + "\nis: " + cryptogram.phrase + "\nWould you like to play again? (Y/N)");
+                    Character response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
+                    if (response == 'N') { //if the player does not want to play again the game will end
+                        System.out.println("Goodbye!");
+                        gameFinished = true;
+                    } else { //if the player does want to play again the current cryptogram will end and a new cryptogram will begin
+                        System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\n3 to load Letter Cryptogram\n4 to load Number Cryptogram\nEnter Choice >");
+                        selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
+                        cryptogram = generateCryptogram(selection);
+                        currentPlayer.incrementCryptogramsPlayed();
+                        currentAnswer = "";
+                        for (int i = 0; i < cryptogram.getPhrase().length(); i++) { //fills the current answer with dashes to represent unspecified characters
+                            currentAnswer = currentAnswer + "-";
+                        }
+                    }
                     break;
                 default:
                     System.out.println(input + " is not a valid input. Please enter a valid input");
