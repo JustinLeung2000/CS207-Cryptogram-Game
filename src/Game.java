@@ -1,8 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class Game {
     //    private HashMap<Player, Cryptogram> playerGameMapping;
@@ -39,13 +38,13 @@ public class Game {
             String input = checkValidInput(reader.readLine(), "General");
             switch (input) {
                 case "ENTER":
-                    System.out.println("Type the character you wish to select followed by your answer");
-                    System.out.print("Character > ");
-                    Character selectedChar = checkValidInput(reader.readLine(), "General").charAt(0); //selectedChar holds which character from the encrypted phrase the player has selected
-                    if (cryptogram.getEncrypted().contains(selectedChar.toString())) {
+                    System.out.println("Type the letter you wish to select followed by your answer");
+                    System.out.print("Letter > ");
+                    String selectedLetter = checkValidInput(reader.readLine(), "General"); //selectedLetter holds which character from the encrypted phrase the player has selected
+                    if (cryptogram.getEncrypted().contains(selectedLetter)) {
                         System.out.print("Change to > ");
-                        char changeCharTo = checkValidInput(reader.readLine(), "General").charAt(0); //changeCharTo holds the character which the player wants to insert into their answer
-                        currentAnswer = enterLetter(cryptogram, currentAnswer, selectedChar, changeCharTo); //updates the current answer
+                        char changeLetterTo = checkValidInput(reader.readLine(), "General").charAt(0); //changeLetterTo holds the character which the player wants to insert into their answer
+                        currentAnswer = enterLetter(cryptogram, currentAnswer, selectedLetter, changeLetterTo); //updates the current answer
                     } else {
                         System.out.println("The encrypted phrase does not contain this character, please enter another character");
                     }
@@ -89,28 +88,41 @@ public class Game {
         }
     }
 
-    public String enterLetter(Cryptogram cryptogram, String currentAnswer, Character selectedChar, Character changeCharTo) throws IOException {
-        int i = cryptogram.getEncrypted().indexOf(selectedChar);
-        if(changeCharTo == currentAnswer.charAt(i)) {
-            System.out.println("You have already entered this letter in this slot. Please select a different letter");
+    public String enterLetter(Cryptogram cryptogram, String currentAnswer, String selectedLetter, Character changeLetterTo) throws IOException {
+        if(currentAnswer.contains(changeLetterTo.toString())) {
+            System.out.println("You have already entered this letter. Please select a different letter");
         }
         else{
-            if ('-' != currentAnswer.charAt(i)) { //if the player has already entered a plain letter...
+            StringTokenizer encryptedTokenizer = new StringTokenizer(cryptogram.getEncrypted());
+            int selectedLetterIndex = 0;
+            int i=0;
+            boolean breakOut = false;
+            while(encryptedTokenizer.hasMoreTokens() && breakOut==false) {
+                if(encryptedTokenizer.nextToken().equals(selectedLetter)) {
+                    selectedLetterIndex = i;
+                    breakOut=true;
+                }
+                else
+                    i++;
+            }
+            if (currentAnswer.charAt(selectedLetterIndex) != '-') { //if the player has already entered a plain letter...
                 System.out.println("You have already entered a letter into this slot, are you sure you want to override it? (Y/N)");
                 char response = checkValidInput(reader.readLine(), "Y/N").charAt(0); //...the player will be asked if they want to override their previous answer
                 if (response == 'N') {
                     System.out.println("Ok, character not changed");
                 } else {
+                    encryptedTokenizer = new StringTokenizer(cryptogram.getEncrypted());
                     for (int j = 0; j < currentAnswer.length(); j++) { // for all characters of current answer
-                        if (cryptogram.getEncrypted().charAt(j) == selectedChar) {
-                            currentAnswer = currentAnswer.substring(0, j) + changeCharTo + currentAnswer.substring(j + 1);
+                        if(encryptedTokenizer.nextToken().equals(selectedLetter)){
+                            currentAnswer = currentAnswer.substring(0, j) + changeLetterTo + currentAnswer.substring(j + 1);
                         }
                     }
                 }
             } else {
+                encryptedTokenizer = new StringTokenizer(cryptogram.getEncrypted());
                 for (int j = 0; j < currentAnswer.length(); j++) { // for all characters of current answer
-                    if (cryptogram.getEncrypted().charAt(j) == selectedChar) {
-                        currentAnswer = currentAnswer.substring(0, j) + changeCharTo + currentAnswer.substring(j + 1);
+                    if(encryptedTokenizer.nextToken().equals(selectedLetter)){
+                        currentAnswer = currentAnswer.substring(0, j) + changeLetterTo + currentAnswer.substring(j + 1);
                     }
                 }
             }
@@ -221,7 +233,6 @@ public class Game {
                 System.out.println("Please enter a phrase");
                 phrase = reader.readLine();
             }
-
             return new LetterCryptogram(phrase.toUpperCase().trim());
         } else {
             System.out.println("Number Cryptogram Selected");
@@ -277,16 +288,22 @@ public class Game {
     }
 
     private void printGameStatus(Cryptogram crypt, String currentAnswer) {
-        for (int i = 0; i < crypt.getEncrypted().length(); i++) {
-            System.out.print(crypt.getEncrypted().charAt(i) + " ");
+        StringTokenizer defaultTokenizer = new StringTokenizer(crypt.getEncrypted());
+        while (defaultTokenizer.hasMoreTokens()) {
+            System.out.print(defaultTokenizer.nextToken() + " ");
         }
         System.out.println();
-        for (int i = 0; i < crypt.getEncrypted().length() * 2; i++) {
+        for (int i = 0; i < crypt.getEncrypted().length(); i++) {
             System.out.print("-");
         }
         System.out.println();
+        defaultTokenizer = new StringTokenizer(crypt.getEncrypted());
         for (int i = 0; i < crypt.getPhrase().length(); i++) {
-            System.out.print(currentAnswer.charAt(i) + " ");
+            System.out.print(currentAnswer.charAt(i));
+            int tokenLength = defaultTokenizer.nextToken().length();
+            for(int j=0;j<tokenLength; j++){
+                System.out.print(" ");
+            }
         }
         System.out.println();
     }

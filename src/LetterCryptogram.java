@@ -27,30 +27,34 @@ public class LetterCryptogram extends Cryptogram {
         return phrase;
     }
 
-    public HashMap<Character, Character> getCryptogramAlphabet(){
+    public HashMap<Character, String> getCryptogramAlphabet(){
         return cryptogramAlphabet;
     }
 
 
-    protected HashMap<Character, Character> generateMapping() {
-        HashMap<Character, Character> alphabetMap = new HashMap<Character, Character>();
+    protected HashMap<Character, String> generateMapping() {
+        HashMap<Character, String> alphabetMap = new HashMap<Character, String>();
         ArrayList<Character> plainAlphabet = populateAlphabet();
         Random random = new Random();
-        ArrayList<Character> sacrifice = populateAlphabet();
-        for (int i=0; i<plainAlphabet.size(); i++) {
+        ArrayList<String> sacrifice = populateMapped();
+        int i=0;
+        while (i<plainAlphabet.size()) {
             Character currLetter = plainAlphabet.get(i);
             int randIndx = random.nextInt(sacrifice.size());
-            alphabetMap.put(currLetter, sacrifice.get(randIndx));
-            sacrifice.remove(randIndx);
+            if(sacrifice.get(randIndx).charAt(0) != currLetter){
+                alphabetMap.put(currLetter, sacrifice.get(randIndx));
+                sacrifice.remove(randIndx);
+                i++;
+            }
         }
         return alphabetMap;
     }
 
-    public ArrayList<Character> populateAlphabet(){
+    private ArrayList<String> populateMapped() {
         Character curr = 'A';
-        ArrayList<Character> alphabet = new ArrayList<Character>();
+        ArrayList<String> alphabet = new ArrayList<String>();
         for(int i = 0; i<26; i++){
-            alphabet.add(curr);
+            alphabet.add(curr.toString());
             curr++;
         }
         return alphabet;
@@ -60,8 +64,9 @@ public class LetterCryptogram extends Cryptogram {
         String encrypted = "";
         for(int i = 0; i<inputPhrase.length(); i++){
             try{
-                char nextLetter = cryptogramAlphabet.get(inputPhrase.charAt(i));
+                String nextLetter = cryptogramAlphabet.get(inputPhrase.charAt(i));
                 encrypted = encrypted + nextLetter;
+                encrypted += " ";
             }
             catch (NullPointerException n){
                 encrypted = encrypted + " ";

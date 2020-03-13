@@ -26,15 +26,15 @@ public class NumberCryptogram extends Cryptogram {
     }
 
     @Override
-    public HashMap<Character, Character> getCryptogramAlphabet() {
+    public HashMap<Character, String> getCryptogramAlphabet() {
         return null;
     }
 
-    protected HashMap<Character, Character> generateMapping() {
-        HashMap<Character, Character> alphabetMap = new HashMap<Character, Character>();
+    protected HashMap<Character, String> generateMapping() {
+        HashMap<Character, String> alphabetMap = new HashMap<Character, String>();
         ArrayList<Character> plainAlphabet = populateAlphabet();
         Random random = new Random();
-        ArrayList<Character> sacrifice = populateAlphabet();
+        ArrayList<String> sacrifice = populateNumberAlphabet();
         for (int i=0; i<plainAlphabet.size(); i++) {
             Character currLetter = plainAlphabet.get(i);
             int randIndx = random.nextInt(sacrifice.size());
@@ -44,22 +44,22 @@ public class NumberCryptogram extends Cryptogram {
         return alphabetMap;
     }
 
-    public ArrayList<Character> populateAlphabet(){
-        Character curr = '0';
-        ArrayList<Character> alphabet = new ArrayList<Character>();
-        for(int i = 0; i<10; i++){
-            alphabet.add(curr);
-            curr++;
+    private ArrayList<String> populateNumberAlphabet() {
+        ArrayList<String> numbers = new ArrayList<String>();
+        for(Integer i=0; i<26; i++){
+            numbers.add(i.toString());
         }
-        return alphabet;
+        return numbers;
     }
+
 
     public String encrypt(String inputPhrase) {
         String encrypted = "";
         for(int i = 0; i<inputPhrase.length(); i++){
             try{
-                char nextLetter = cryptogramAlphabet.get(inputPhrase.charAt(i));
+                String nextLetter = cryptogramAlphabet.get(inputPhrase.charAt(i));
                 encrypted = encrypted + nextLetter;
+                encrypted += " ";
             }
             catch (NullPointerException n){
                 encrypted = encrypted + " ";
