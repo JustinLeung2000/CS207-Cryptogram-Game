@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.Random;
 import java.util.ArrayList;
@@ -12,6 +14,13 @@ public class LetterCryptogram extends Cryptogram {
     }
 
     public LetterCryptogram() {
+        this.phrase = "ERROR";
+
+    }
+
+    public LetterCryptogram(String phrase, String encrypted) {
+        this.phrase = phrase;
+        this.encrypted = encrypted;
 
     }
 

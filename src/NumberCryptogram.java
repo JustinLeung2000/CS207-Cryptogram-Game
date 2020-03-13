@@ -1,6 +1,6 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class NumberCryptogram extends Cryptogram {
 
@@ -8,6 +8,12 @@ public class NumberCryptogram extends Cryptogram {
         this.phrase = phrase;
         cryptogramAlphabet = generateMapping();
         encrypted = encrypt(this.phrase);
+    }
+
+    public NumberCryptogram(String phrase, String encrypted) {
+        this.phrase = phrase;
+        this.encrypted = encrypted;
+
     }
 
     @Override
