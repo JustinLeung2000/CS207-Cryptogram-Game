@@ -3,8 +3,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Stack;
 
 public class Game {
     //    private HashMap<Player, Cryptogram> playerGameMapping;
@@ -18,16 +16,13 @@ public class Game {
         gameFinished = false;
     }
 
-    public Game() {
-    }
-
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public void playGame() throws IOException {
         System.out.print("Welcome to Friday Team 1's Cryptogram game!\nPlease select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number Cryptogram\n3 to load Cryptogram\nEnter Choice >");
         char selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
         Cryptogram cryptogram = generateCryptogram(selection);
-        if(cryptogram.getPhrase() == "ERROR"){
+        if(cryptogram.getPhrase().equals("ERROR")){
             System.out.print("No cryptograms saved.\nPlease select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number Cryptogram\nEnter Choice >");
             selection = checkValidInput(reader.readLine(), "1/2").charAt(0);
             cryptogram = generateCryptogram(selection);
@@ -64,7 +59,7 @@ public class Game {
                 case "CHECK":
                     if(checkAnswer(currentAnswer, cryptogram)) {
                         System.out.println("Congratulations! You have completed the cryptogram!\nWould you like to play again? (Y/N)");
-                        Character response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
+                        char response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
                         if (response == 'N') { //if the player does not want to play again the game will end
                             System.out.println("Goodbye!");
                             gameFinished = true;
@@ -95,8 +90,8 @@ public class Game {
                     cryptogram.saveCryptogram(currentPlayer.getUsername(), currentAnswer, selection);
                     break;
                 case "SOLVE":
-                    System.out.println("The solution to the crytogram: " + cryptogram.encrypted + "\nis: " + cryptogram.phrase + "\nWould you like to play again? (Y/N)");
-                    Character response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
+                    System.out.println("The solution to the cryptogram: " + cryptogram.encrypted + "\nis: " + cryptogram.phrase + "\nWould you like to play again? (Y/N)");
+                    char response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
                     if (response == 'N') { //if the player does not want to play again the game will end
                         System.out.println("Goodbye!");
                         gameFinished = true;
@@ -126,11 +121,10 @@ public class Game {
             StringTokenizer encryptedTokenizer = new StringTokenizer(cryptogram.getEncrypted());
             int selectedLetterIndex = 0;
             int i=0;
-            boolean breakOut = false;
-            while(encryptedTokenizer.hasMoreTokens() && breakOut==false) {
+            while(encryptedTokenizer.hasMoreTokens()) {
                 if(encryptedTokenizer.nextToken().equals(selectedLetter)) {
                     selectedLetterIndex = i;
-                    breakOut=true;
+                    break;
                 }
                 else
                     i++;
@@ -162,8 +156,9 @@ public class Game {
 
     public String undoLetter(String currentAnswer) throws IOException {
         System.out.print("Please select the letter you wish to undo\n>");
-        Character response = checkValidInput(reader.readLine(), "General").charAt(0);
-        if(currentAnswer.contains(response.toString()) && response != '-'){
+        char response = checkValidInput(reader.readLine(), "General").charAt(0);
+        String s = "" + response;
+        if(currentAnswer.contains(s) && response != '-'){
             for(int i=0; i<currentAnswer.length(); i++){
                 if(currentAnswer.charAt(i) == response){
                     currentAnswer = currentAnswer.replace(response, '-');
@@ -176,7 +171,7 @@ public class Game {
         return currentAnswer;
     }
 
-    public boolean checkAnswer(String currentAnswer, Cryptogram cryptogram) throws IOException {
+    public boolean checkAnswer(String currentAnswer, Cryptogram cryptogram) {
         if (!currentAnswer.contains("-")) { //iff all empty spaces in the answer have been filled in by the player...
             currentPlayer.incrementTotalGuesses();
             if (cryptogram.getPhrase().equals(currentAnswer)) {
@@ -206,16 +201,6 @@ public class Game {
 
     /*Placeholder*/
     public void viewFrequencies() {
-
-    }
-
-    /*Placeholder*/
-    public void saveGame() {
-
-    }
-
-    /*Placeholder*/
-    public void loadGame() {
 
     }
 
@@ -252,7 +237,7 @@ public class Game {
     /*Creates an appropriate cryptogram given the user input
      * letter cryptogram if 1
      * number cryptogram if 2*/
-    private Cryptogram generateCryptogram(char selection) throws IOException {
+    public Cryptogram generateCryptogram(char selection) throws IOException {
         if (selection == '1') {
             System.out.println("Letter Cryptogram Selected");
             String phrase;
@@ -361,7 +346,7 @@ public class Game {
                 String[] cryptoData = line.split(",");
                 if(cryptoData[0].compareTo(playerName) == 0){
                     csvReader.close();
-                    if(cryptoData[1] == "Letter"){
+                    if(cryptoData[1].equals("Letter")){
                         currentAnswer = cryptoData[4];
                         return new LetterCryptogram(cryptoData[2], cryptoData[3]);
                     }
