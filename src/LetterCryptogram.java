@@ -74,8 +74,7 @@ public class LetterCryptogram extends Cryptogram {
         for(int i = 0; i<inputPhrase.length(); i++){
             try{
                 String nextLetter = cryptogramAlphabet.get(inputPhrase.charAt(i));
-                encrypted = encrypted + nextLetter;
-                encrypted += " ";
+                encrypted = encrypted + nextLetter + " ";
             }
             catch (NullPointerException n){
                 encrypted = encrypted + " ";
