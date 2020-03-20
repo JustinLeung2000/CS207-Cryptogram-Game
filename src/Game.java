@@ -321,11 +321,7 @@ public class Game {
         while (defaultTokenizer.hasMoreTokens()) {
             System.out.print(defaultTokenizer.nextToken() + " ");
         }
-        System.out.println();
-        for (int i = 0; i < crypt.getEncrypted().length(); i++) {
-            System.out.print("-");
-        }
-        System.out.println();
+        System.out.println("");
         defaultTokenizer = new StringTokenizer(crypt.getEncrypted());
         for (int i = 0; i < crypt.getPhrase().length(); i++) {
             System.out.print(currentAnswer.charAt(i));
