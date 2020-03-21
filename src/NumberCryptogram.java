@@ -13,7 +13,7 @@ public class NumberCryptogram extends Cryptogram {
     public NumberCryptogram(String phrase, String encrypted) {
         this.phrase = phrase;
         this.encrypted = encrypted;
-
+        cryptogramAlphabet = generateMappingFromSave(phrase, encrypted);
     }
 
     @Override
@@ -50,6 +50,32 @@ public class NumberCryptogram extends Cryptogram {
         return alphabetMap;
     }
 
+    private HashMap<Character, String> generateMappingFromSave(String phrase, String encrypted) {
+        HashMap<Character, String> alphabetMap = new HashMap<Character, String>();
+        ArrayList<Character> plainAlphabet = populateAlphabet();
+        Random random = new Random();
+        ArrayList<String> sacrifice = populateNumberAlphabet();
+        int i=0;
+        String[] encryptedChars = encrypted.split("\\s+");
+        while (i<plainAlphabet.size()) {
+            Character currLetter = plainAlphabet.get(i);
+            if(phrase.contains(currLetter.toString())){
+                alphabetMap.put(currLetter, encryptedChars[phrase.indexOf(currLetter)]);
+                sacrifice.remove(encryptedChars[phrase.indexOf(currLetter)]);
+                i++;
+            }
+            else {
+                int randIndx = random.nextInt(sacrifice.size());
+                if (sacrifice.get(randIndx).charAt(0) != currLetter) {
+                    alphabetMap.put(currLetter, sacrifice.get(randIndx));
+                    sacrifice.remove(randIndx);
+                    i++;
+                }
+            }
+        }
+        return alphabetMap;
+    }
+
     private ArrayList<String> populateNumberAlphabet() {
         ArrayList<String> numbers = new ArrayList<String>();
         for(Integer i=0; i<26; i++){
@@ -64,8 +90,8 @@ public class NumberCryptogram extends Cryptogram {
         for(int i = 0; i<inputPhrase.length(); i++){
             try{
                 String nextLetter = cryptogramAlphabet.get(inputPhrase.charAt(i));
-                encrypted = encrypted + nextLetter;
-                encrypted += " ";
+                nextLetter.equals(nextLetter);
+                encrypted = encrypted + nextLetter+" ";
             }
             catch (NullPointerException n){
                 encrypted = encrypted + " ";

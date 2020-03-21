@@ -1,5 +1,7 @@
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -8,22 +10,28 @@ public class Players {
     public static ArrayList<Player> allPlayers;
     private String playersFile;
 
-    public static void loadPlayers(String fileName){
+    public Players(String playersFile) {
+        allPlayers = new ArrayList<Player>();
+        this.playersFile = playersFile;
+        loadPlayers();
+    }
+
+    public void loadPlayers(){
         String username;
         int cryptogramsPlayed;
         int cryptogramsCompleted;
         int totalGuesses;
         int accuracy;
         try {
-            BufferedReader bReader = new BufferedReader(new FileReader(fileName));
+            BufferedReader bReader = new BufferedReader(new FileReader(playersFile));
             String line;
             while ((line = bReader.readLine()) != null) {
-                Scanner s = new Scanner(line);
-                username = s.next();
-                cryptogramsPlayed = s.nextInt();
-                cryptogramsCompleted = s.nextInt();
-                totalGuesses = s.nextInt();
-                accuracy = s.nextInt();
+                String[] attributes = line.split(",");
+                username = attributes[0];
+                cryptogramsPlayed = Integer.parseInt(attributes[1]);
+                cryptogramsCompleted = Integer.parseInt(attributes[2]);
+                totalGuesses = Integer.parseInt(attributes[3]);
+                accuracy = Integer.parseInt(attributes[4]);
 
                 Player player = new Player(username, cryptogramsPlayed, cryptogramsCompleted, totalGuesses, accuracy);
                 allPlayers.add(player);
@@ -40,10 +48,22 @@ public class Players {
     }
 
     public void addPlayer(Player p){
-        try (FileWriter fWriter = new FileWriter("src/PlayerData.txt", true);
-             BufferedWriter bWriter = new BufferedWriter(fWriter)) {
-            bWriter.write(p.toString());
-            bWriter.newLine();
+        try{
+            allPlayers.add(p);
+            File csvName = new File(playersFile);
+            if (!csvName.exists()) {
+                csvName.createNewFile();
+            }
+            FileWriter csv = new FileWriter(csvName, true);
+
+            csv.append(p.getUsername() + ","
+                    +p.getCryptogramsPlayed()
+                    +","+p.getCryptogramsCompleted()
+                    + ","+p.getTotalGuesses()
+                    +","+p.getAccuracy()+"\n"
+            );
+            csv.flush();
+            csv.close();
         }
         catch (FileNotFoundException e) {
             System.out.println("Player Data file not found");
@@ -56,10 +76,17 @@ public class Players {
     public void savePlayers(String fileName){
         try (FileWriter fWriter = new FileWriter(fileName);
             BufferedWriter bWriter = new BufferedWriter(fWriter)) {
-            for (Player p : allPlayers) {
-                bWriter.write(p.toString());
-                bWriter.newLine();
+            for (int i=0; i<allPlayers.size(); i++) {
+                Player p = allPlayers.get(i);
+                bWriter.append(p.getUsername()
+                        +","+p.getCryptogramsPlayed()
+                        +","+p.getCryptogramsCompleted()
+                        +","+p.getTotalGuesses()
+                        +","+p.getAccuracy()+"\n"
+                );
             }
+            bWriter.flush();
+            bWriter.close();
         }
         catch (IOException e) {
             System.out.println("Unable to save to player data file");
@@ -67,7 +94,7 @@ public class Players {
 
     }
 
-    public static Player findPlayer(String currentUser){
+    public Player findPlayer(String currentUser){
         for (Player p : allPlayers) {
             if(p.getUsername().equals(currentUser)) {
                 System.out.println("Your player data has been found");
@@ -107,4 +134,5 @@ public class Players {
     public void setPlayersFile(String playersFile) {
         this.playersFile = playersFile;
     }
+
 }

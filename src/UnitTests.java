@@ -6,6 +6,10 @@ import java.io.IOException;
 
 public class UnitTests {
 
+    String playersFile = "resources/TestPlayers.csv";
+    String cryptogramsFile = "resources/TestCryptograms.csv";
+    String phraseFile = "resources/TestPhrases.txt";
+
     @Before
     public void  beforeEach(){
     }
@@ -13,7 +17,7 @@ public class UnitTests {
     @Test
     public void testLetterEntry() throws IOException {
         Player p = new Player("Bob", 0, 0, 0, 0);
-        Game g = new Game(p);
+        Game g = new Game(p, playersFile, cryptogramsFile, phraseFile);
         Cryptogram c = new LetterCryptogram("ABCCBA");
         String currentAnswer  = "------";
         char selectedChar = c.getEncrypted().charAt(0);
@@ -27,14 +31,12 @@ public class UnitTests {
     @Test
     public void testCheckAnswer() {
         Player p = new Player("Bob", 0, 0, 0, 0);
-        Game g = new Game(p);
+        Game g = new Game(p, playersFile, cryptogramsFile, phraseFile);
         Cryptogram c = new LetterCryptogram("ABCCBA");
         String currentAnswer  = "ABCCBA";
 
         Assert.assertTrue(g.checkAnswer(currentAnswer, c));
         Assert.assertEquals(1, p.getCryptogramsCompleted());
         Assert.assertEquals(1, p.getTotalGuesses());
-
     }
-
 }

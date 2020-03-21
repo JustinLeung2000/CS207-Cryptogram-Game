@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/cs207-cryptograms.iml" filepath="$PROJECT_DIR$/cs207-cryptograms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/cs207-cryptograms.iml" filepath="$PROJECT_DIR$/.idea/cs207-cryptograms.iml" />
     </modules>
   </component>
 </project>

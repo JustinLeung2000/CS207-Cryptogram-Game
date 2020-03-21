@@ -37,7 +37,7 @@ public abstract class Cryptogram {
     }
 
     public void saveCryptogram(String playerName, String currentAnswer, char selection) throws IOException{
-        File csvName = new File("src/Cryptograms.csv");
+        File csvName = new File("resources/Cryptograms.csv");
         String type;
         String line;
         int lineNum = 0;
