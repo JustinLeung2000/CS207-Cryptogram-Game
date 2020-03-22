@@ -11,7 +11,7 @@ public class Players {
     private String playersFile;
 
     public Players(String playersFile) {
-        allPlayers = new ArrayList<Player>();
+        allPlayers = new ArrayList<>();
         this.playersFile = playersFile;
         loadPlayers();
     }
@@ -56,12 +56,7 @@ public class Players {
             }
             FileWriter csv = new FileWriter(csvName, true);
 
-            csv.append(p.getUsername() + ","
-                    +p.getCryptogramsPlayed()
-                    +","+p.getCryptogramsCompleted()
-                    + ","+p.getTotalGuesses()
-                    +","+p.getAccuracy()+"\n"
-            );
+            csv.append(p.getUsername()).append(",").append(String.valueOf(p.getCryptogramsPlayed())).append(",").append(String.valueOf(p.getCryptogramsCompleted())).append(",").append(String.valueOf(p.getTotalGuesses())).append(",").append(String.valueOf(p.getAccuracy())).append("\n");
             csv.flush();
             csv.close();
         }
@@ -76,17 +71,10 @@ public class Players {
     public void savePlayers(String fileName){
         try (FileWriter fWriter = new FileWriter(fileName);
             BufferedWriter bWriter = new BufferedWriter(fWriter)) {
-            for (int i=0; i<allPlayers.size(); i++) {
-                Player p = allPlayers.get(i);
-                bWriter.append(p.getUsername()
-                        +","+p.getCryptogramsPlayed()
-                        +","+p.getCryptogramsCompleted()
-                        +","+p.getTotalGuesses()
-                        +","+p.getAccuracy()+"\n"
-                );
+            for (Player p : allPlayers) {
+                bWriter.append(p.getUsername()).append(",").append(String.valueOf(p.getCryptogramsPlayed())).append(",").append(String.valueOf(p.getCryptogramsCompleted())).append(",").append(String.valueOf(p.getTotalGuesses())).append(",").append(String.valueOf(p.getAccuracy())).append("\n");
             }
             bWriter.flush();
-            bWriter.close();
         }
         catch (IOException e) {
             System.out.println("Unable to save to player data file");
@@ -124,7 +112,7 @@ public class Players {
     }
 
     public void setAllPlayers(ArrayList<Player> allPlayers) {
-        this.allPlayers = allPlayers;
+        Players.allPlayers = allPlayers;
     }
 
     public String getPlayersFile() {

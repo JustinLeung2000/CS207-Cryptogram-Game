@@ -28,7 +28,7 @@ public abstract class Cryptogram {
 
     public ArrayList<Character> populateAlphabet(){
         Character curr = 'A';
-        ArrayList<Character> alphabet = new ArrayList<Character>();
+        ArrayList<Character> alphabet = new ArrayList<>();
         for(int i = 0; i<26; i++){
             alphabet.add(curr);
             curr++;
@@ -40,13 +40,13 @@ public abstract class Cryptogram {
         File csvName = new File("resources/Cryptograms.csv");
         String type;
         String line;
-        int lineNum = 0;
+        int lineNum;
         if(selection == '1'){
             type = "Letter";
         }
         else type = "Number";
         if(!csvName.exists()){
-            csvName.createNewFile();
+            System.out.println(csvName.createNewFile());
         }
         FileReader fr = new FileReader(csvName);
         LineNumberReader csvReader = new LineNumberReader(fr);

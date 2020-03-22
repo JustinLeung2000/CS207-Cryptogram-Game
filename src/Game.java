@@ -172,9 +172,9 @@ public class Game {
         currentAnswer = "";
         for (int i = 0; i < cryptogram.getPhrase().length(); i++) { //fills the current answer with dashes to represent unspecified characters
             if (cryptogram.getPhrase().charAt(i) == ' ') {
-                currentAnswer += " ";
+                currentAnswer = currentAnswer.concat(" ");
             } else {
-                currentAnswer += "- ";
+                currentAnswer = currentAnswer.concat("- ");
             }
         }
     }
@@ -209,7 +209,7 @@ public class Game {
                 } else {
                     for(int j=0; j<currentAnswer.length(); j++){
                         Character currChar = encrypted.charAt(j);
-                        if(currChar.equals(selectedLetter)){
+                        if(currChar.equals(selectedLetter.charAt(0))){
                             currentAnswer = currentAnswer.substring(0, j) + changeLetterTo + currentAnswer.substring(j + 1);
                         }
                     }
@@ -244,10 +244,10 @@ public class Game {
             String spacedPhrase = "";
             for(int i=0; i<phrase.length(); i++){
                 if(phrase.charAt(i) == ' '){
-                   spacedPhrase += " ";
+                   spacedPhrase = spacedPhrase.concat(" ");
                 }
                 else{
-                    spacedPhrase += phrase.charAt(i) + " ";
+                    spacedPhrase = spacedPhrase.concat(phrase.charAt(i) + " ");
                 }
             }
             if(currentAnswer.equals(spacedPhrase)){
@@ -263,11 +263,6 @@ public class Game {
     /*Placeholder*/
     public String getHint() {
         return "";
-    }
-
-    /*Placeholder*/
-    public void loadPlayer() {
-
     }
 
 
@@ -315,7 +310,7 @@ public class Game {
             String phrase;
             FileReader fr = new FileReader(phraseFile);
             BufferedReader br = new BufferedReader(fr);
-            ArrayList<String> phrases = new ArrayList<String>();
+            ArrayList<String> phrases = new ArrayList<>();
             try {
                 String currPhrase;
                 while ((currPhrase = br.readLine()) != null) {
@@ -334,7 +329,7 @@ public class Game {
             String phrase;
             FileReader fr = new FileReader(phraseFile);
             BufferedReader br = new BufferedReader(fr);
-            ArrayList<String> phrases = new ArrayList<String>();
+            ArrayList<String> phrases = new ArrayList<>();
             try {
                 String currPhrase;
                 while ((currPhrase = br.readLine()) != null) {
@@ -411,7 +406,7 @@ public class Game {
                 System.out.print(" ");
             }
         }
-        System.out.println("");
+        System.out.println();
         StringTokenizer defaultTokenizer = new StringTokenizer(cryptogram.getEncrypted());
         for(int i=0; i<currentAnswer.length(); i++){
             if (currentAnswer.charAt(i) == ' ') {
@@ -433,15 +428,14 @@ public class Game {
         File csv = new File(cryptogramsFile);
         if (csv.isFile()) {
             BufferedReader csvReader = new BufferedReader(new FileReader(csv));
-            while((line = csvReader.readLine()) != null){
+            while ((line = csvReader.readLine()) != null) {
                 String[] cryptoData = line.split(",");
-                if(cryptoData[0].compareTo(playerName) == 0){
+                if (cryptoData[0].compareTo(playerName) == 0) {
                     csvReader.close();
-                    if(cryptoData[1].equals("Letter")){
+                    if (cryptoData[1].equals("Letter")) {
                         currentAnswer = cryptoData[4];
                         return new LetterCryptogram(cryptoData[2], cryptoData[3]);
-                    }
-                    else{
+                    } else {
                         currentAnswer = cryptoData[4];
                         return new NumberCryptogram(cryptoData[2], cryptoData[3]);
                     }
