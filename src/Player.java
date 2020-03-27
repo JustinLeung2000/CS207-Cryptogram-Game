@@ -1,5 +1,5 @@
 
-public class Player {
+public class Player implements Comparable<Player> {
     private String username;
     private int cryptogramsCompleted;
     private int cryptogramsPlayed;
@@ -14,13 +14,12 @@ public class Player {
         this.totalGuesses = totalGuesses;
     }
 
-    /*Placeholder*/
     public void incrementCryptogramsCompleted(){
         cryptogramsCompleted++;
         updateAccuracy();
     }
 
-    /*Placeholder*/
+
     public void incrementCryptogramsPlayed(){
         cryptogramsPlayed++;
     }
@@ -77,6 +76,11 @@ public class Player {
     }
 
     private void updateAccuracy(){
-        accuracy = (cryptogramsCompleted*100)/(totalGuesses);
+        accuracy = (cryptogramsCompleted/totalGuesses) *100;
+        accuracy = Math.round(accuracy);
+    }
+
+    public int compareTo(Player o) {
+        return Integer.compare(this.getCryptogramsCompleted(), o.getCryptogramsCompleted());
     }
 }
