@@ -68,6 +68,7 @@ public class Game {
                 System.out.print("Enter one of the following options:" +
                         "\n\tEnter" +
                         "\n\tUndo" +
+                        "\n\tFrequency"+
                         "\n\tCheck" +
                         "\n\tStats" +
                         "\n\tSave" +
@@ -90,6 +91,16 @@ public class Game {
                         break;
                     case "UNDO":
                         currentAnswer = undoLetter(currentAnswer);
+                        break;
+                    case "FREQUENCY":
+                        char alphabet;
+                        System.out.println("Letter\tFrequency");
+                        //for (int i=0; i < 26; i++) {
+                        int i = 0;
+                            for(alphabet = 'a'; alphabet <= 'z'; alphabet++){
+                            System.out.println(alphabet + "\t" + cryptogram.getFrequency()[i]);
+                            i++;
+                        }
                         break;
                     case "CHECK":
                         if (checkAnswer(currentAnswer, cryptogram)) {
@@ -144,6 +155,7 @@ public class Game {
             }
         }
     }
+
 
     private void logIn() throws IOException {
         System.out.print("Welcome to Friday Team 1's Cryptogram game!\n");
