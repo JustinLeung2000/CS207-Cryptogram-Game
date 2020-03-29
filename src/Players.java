@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -69,6 +70,7 @@ public class Players {
     }
 
     public void savePlayers(String fileName){
+        allPlayers.sort(Collections.reverseOrder());
         try (FileWriter fWriter = new FileWriter(fileName);
             BufferedWriter bWriter = new BufferedWriter(fWriter)) {
             for (Player p : allPlayers) {
@@ -122,5 +124,7 @@ public class Players {
     public void setPlayersFile(String playersFile) {
         this.playersFile = playersFile;
     }
+
+    public void sort(){allPlayers.sort(Collections.reverseOrder());}
 
 }

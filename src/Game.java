@@ -34,104 +34,171 @@ public class Game {
         System.out.print("Please select the type of cryptogram you would like to play:\n" +
                 "1 for Letter Cryptogram\n" +
                 "2 for Number Cryptogram\n" +
-                "3 to Load a cryptogram\n" +
-                "\tEnterChoice >");
+                "3 to Load a Cryptogram\n" +
+                "\tEnter Choice >");
         char selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
-        Cryptogram cryptogram = generateCryptogram(selection);
-        if(cryptogram.getPhrase().equals("ERROR")){
-            System.out.print("No cryptograms saved." +
-                    "\nPlease select the type of cryptogram you would like to play:" +
-                    "\n1 for Letter Cryptogram" +
-                    "\n2 for Number Cryptogram" +
-                    "\nEnter Choice >");
-            selection = checkValidInput(reader.readLine(), "1/2").charAt(0);
-            cryptogram = generateCryptogram(selection);
-        }
-        currentPlayer.incrementCryptogramsPlayed();
-        if(selection!='3'){
-            populateCurrentAnswer(cryptogram);
-        }
-        while (!gameFinished) {
-            players.savePlayers(playersFile);
-            printGameStatus(cryptogram, currentAnswer);
-            System.out.print("Enter one of the following options:" +
-                    "\n\tEnter" +
-                    "\n\tUndo" +
-                    "\n\tCheck" +
-                    "\n\tStats" +
-                    "\n\tSave" +
-                    "\n\tSolve" +
-                    "\n\tExit" +
-                    "\n>");
-            String input = checkValidInput(reader.readLine(), "General");
-            switch (input) {
-                case "ENTER":
-                    System.out.println("Type the letter you wish to select followed by your answer");
-                    System.out.print("Letter > ");
-                    String selectedLetter = checkValidInput(reader.readLine(), "General"); //selectedLetter holds which character from the encrypted phrase the player has selected
-                    if (cryptogram.getEncrypted().contains(selectedLetter)) {
-                        System.out.print("Change to > ");
-                        char changeLetterTo = checkValidInput(reader.readLine(), "General").charAt(0); //changeLetterTo holds the character which the player wants to insert into their answer
-                        currentAnswer = enterLetter(cryptogram, currentAnswer, selectedLetter, changeLetterTo); //updates the current answer
-                    } else {
-                        System.out.println("The encrypted phrase does not contain this character, please enter another character");
-                    }
-                    break;
-                case "UNDO":
-                    currentAnswer = undoLetter(currentAnswer);
-                    break;
-                case "CHECK":
-                    if(checkAnswer(currentAnswer, cryptogram)) {
-                        System.out.println("Congratulations! You have completed the cryptogram!\nWould you like to play again? (Y/N)");
+//        if (selection == '4') {
+//            players.sort();
+//            int i = 0;
+//            while (i < 10 && i < Players.allPlayers.size()) {
+//                System.out.print("\n" + Players.allPlayers.get(i).getUsername() + "\tCryptograms Completed = " + Players.allPlayers.get(i).getCryptogramsCompleted());
+//                i++;
+//            }
+//            System.out.println();
+//            gameFinished = true;
+
+            Cryptogram cryptogram = generateCryptogram(selection);
+            if (cryptogram.getPhrase().equals("ERROR")) {
+                System.out.print("No cryptograms saved." +
+                        "\nPlease select the type of cryptogram you would like to play:" +
+                        "\n1 for Letter Cryptogram" +
+                        "\n2 for Number Cryptogram" +
+                        "\nEnter Choice >");
+                selection = checkValidInput(reader.readLine(), "1/2").charAt(0);
+                cryptogram = generateCryptogram(selection);
+            }
+            currentPlayer.incrementCryptogramsPlayed();
+            if (selection != '3') {
+                populateCurrentAnswer(cryptogram);
+            }
+            while (!gameFinished) {
+                players.savePlayers(playersFile);
+                printGameStatus(cryptogram, currentAnswer);
+                System.out.print("Enter one of the following options:" +
+                        "\n\tEnter" +
+                        "\n\tUndo" +
+                        "\n\tFrequency"+
+                        "\n\tCheck" +
+                        "\n\tStats" +
+                        "\n\tSave" +
+                        "\n\tHint" +
+                        "\n\tSolve" +
+                        "\n\tTop Ten" +
+                        "\n\tExit" +
+                        "\n>");
+                String input = checkValidInput(reader.readLine(), "General");
+                switch (input) {
+                    case "ENTER":
+                        System.out.println("Type the letter you wish to select followed by your answer");
+                        System.out.print("Letter > ");
+                        String selectedLetter = checkValidInput(reader.readLine(), "General"); //selectedLetter holds which character from the encrypted phrase the player has selected
+                        if (cryptogram.getEncrypted().contains(selectedLetter)) {
+                            System.out.print("Change to > ");
+                            char changeLetterTo = checkValidInput(reader.readLine(), "General").charAt(0); //changeLetterTo holds the character which the player wants to insert into their answer
+                            currentAnswer = enterLetter(cryptogram, currentAnswer, selectedLetter, changeLetterTo); //updates the current answer
+                        } else {
+                            System.out.println("The encrypted phrase does not contain this character, please enter another character");
+                        }
+                        break;
+                    case "UNDO":
+                        currentAnswer = undoLetter(currentAnswer);
+                        break;
+                    case "FREQUENCY":
+                        char alphabet;
+                        System.out.println("Letter\tFrequency");
+                        //for (int i=0; i < 26; i++) {
+                        int i = 0;
+                            for(alphabet = 'a'; alphabet <= 'z'; alphabet++){
+                            System.out.println(alphabet + "\t" + cryptogram.getFrequency()[i]);
+                            i++;
+                        }
+                        break;
+                    case "CHECK":
+                        if (checkAnswer(currentAnswer, cryptogram)) {
+                            currentPlayer.incrementCryptogramsCompleted();
+                            System.out.println("Congratulations! You have completed the cryptogram!\nWould you like to play again? (Y/N)");
+                            char response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
+                            if (response == 'N') { //if the player does not want to play again the game will end
+                                System.out.println("Goodbye!");
+                                gameFinished = true;
+                            } else { //if the player does want to play again the current cryptogram will end and a new cryptogram will begin
+                                System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\n3 to load a Cryptogram\nEnter Choice >");
+                                selection = checkValidInput(reader.readLine(), "1/2/3/4").charAt(0);
+                                cryptogram = generateCryptogram(selection);
+                                currentPlayer.incrementCryptogramsPlayed();
+                                populateCurrentAnswer(cryptogram);
+                            }
+                        } else {
+                            System.out.println("Incorrect. Please try again.");
+                        }
+                        players.savePlayers(playersFile);
+                        break;
+                    case "EXIT":
+                        gameFinished = true;
+                        players.savePlayers(playersFile);
+                        System.out.println("Goodbye!");
+                        break;
+                    case "STATS":
+                        currentPlayer.printStats();
+                        break;
+                    case "SAVE":
+                        System.out.println("Saving cryptogram...");
+                        cryptogram.saveCryptogram(currentPlayer.getUsername(), currentAnswer, selection, cryptogramsFile);
+                        break;
+                    case "SOLVE":
+                        System.out.println("The solution to the cryptogram: " + cryptogram.encrypted + "\nis: " + cryptogram.phrase + "\nWould you like to play again? (Y/N)");
                         char response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
                         if (response == 'N') { //if the player does not want to play again the game will end
                             System.out.println("Goodbye!");
                             gameFinished = true;
                         } else { //if the player does want to play again the current cryptogram will end and a new cryptogram will begin
-                            System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\n3 to load a Cryptogram\nEnter Choice >");
-                            selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
+                            System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\n3 to load Letter Cryptogram\n4 to load Number Cryptogram\nEnter Choice >");
+                            selection = checkValidInput(reader.readLine(), "1/2/3/4").charAt(0);
                             cryptogram = generateCryptogram(selection);
                             currentPlayer.incrementCryptogramsPlayed();
                             populateCurrentAnswer(cryptogram);
                         }
-                    }
-                    else{
-                        System.out.println("Incorrect. Please try again.");
-                    }
-                    players.savePlayers(playersFile);
-                    break;
-                case "EXIT":
-                    gameFinished = true;
-                    players.savePlayers(playersFile);
-                    System.out.println("Goodbye!");
-                    break;
-                case "STATS":
-                    currentPlayer.printStats();
-                    break;
-                case "SAVE":
-                    System.out.println("Saving cryptogram...");
-                    cryptogram.saveCryptogram(currentPlayer.getUsername(), currentAnswer, selection);
-                    break;
-                case "SOLVE":
-                    System.out.println("The solution to the cryptogram: " + cryptogram.encrypted + "\nis: " + cryptogram.phrase + "\nWould you like to play again? (Y/N)");
-                    char response = checkValidInput(reader.readLine(), "Y/N").charAt(0);
-                    if (response == 'N') { //if the player does not want to play again the game will end
-                        System.out.println("Goodbye!");
-                        gameFinished = true;
-                    } else { //if the player does want to play again the current cryptogram will end and a new cryptogram will begin
-                        System.out.print("Please select the type of cryptogram you would like to play:\n1 for Letter Cryptogram\n2 for Number cryptogram\n3 to load Letter Cryptogram\n4 to load Number Cryptogram\nEnter Choice >");
-                        selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
-                        cryptogram = generateCryptogram(selection);
-                        currentPlayer.incrementCryptogramsPlayed();
-                        populateCurrentAnswer(cryptogram);
-                    }
-                    break;
-                default:
-                    System.out.println(input + " is not a valid input. Please enter a valid input");
-                    break;
+                        break;
+                    case "TOP TEN":
+                        printTopTenPlayers();
+                        break;
+                    case "HINT":
+                        getHint(cryptogram);
+                        break;
+                    default:
+                        System.out.println(input + " is not a valid input. Please enter a valid input");
+                        break;
+                }
             }
         }
+
+    private void getHint(Cryptogram cryptogram) throws IOException {
+        Random rand = new Random();
+        int randomNumber = rand.nextInt(cryptogram.getPhrase().length());
+        StringTokenizer strTok = new StringTokenizer(cryptogram.getEncrypted());
+        String[] encryptTokens = new String[strTok.countTokens()];
+        int i=0;
+        while(strTok.hasMoreTokens()) {
+             encryptTokens[i] = strTok.nextToken();
+             i++;
+        }
+        Character c = cryptogram.phrase.charAt(randomNumber);
+        while(c == ' ' || currentAnswer.contains(c.toString())){
+            randomNumber = rand.nextInt(cryptogram.getPhrase().length());
+            c = cryptogram.phrase.charAt(randomNumber);
+        }
+
+        System.out.println("The letter selected is " + c);
+        for(int j=0; j<encryptTokens.length; j++){
+            Character currChar = encryptTokens[j].charAt(0);
+            if (cryptogram.getCryptogramAlphabet().get(c).equals(currChar.toString())) {
+                currentAnswer = enterLetter(cryptogram, currentAnswer, cryptogram.getCryptogramAlphabet().get(c), c);
+                break;
+            }
+
+        }
     }
+
+    private void printTopTenPlayers() {
+        players.sort();
+        int j = 0;
+        while (j < 10 && j< Players.allPlayers.size()) {
+            System.out.print("\n" + Players.allPlayers.get(j).getUsername() + "\tCryptograms Completed = " + Players.allPlayers.get(j).getCryptogramsCompleted());
+            j++;
+        }
+        System.out.println();
+    }
+
 
     private void logIn() throws IOException {
         System.out.print("Welcome to Friday Team 1's Cryptogram game!\n");

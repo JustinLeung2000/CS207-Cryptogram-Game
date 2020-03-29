@@ -15,9 +15,9 @@ public class NumberCryptogram extends Cryptogram {
         this.encrypted = encrypted;
     }
 
-    @Override
+
     public void getFrequencies() {
-        super.getFrequencies();
+        super.getFrequency();
     }
 
     @Override
