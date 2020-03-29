@@ -35,19 +35,18 @@ public class Game {
                 "1 for Letter Cryptogram\n" +
                 "2 for Number Cryptogram\n" +
                 "3 to Load a Cryptogram\n" +
-                "4 to Show Leaderboards\n" +
                 "\tEnter Choice >");
-        char selection = checkValidInput(reader.readLine(), "1/2/3/4").charAt(0);
-        if (selection == '4') {
-            players.sort();
-            int i = 0;
-            while (i < 10 && i < Players.allPlayers.size()) {
-                System.out.print("\n" + Players.allPlayers.get(i).getUsername() + "    Cryptograms Completed = " + Players.allPlayers.get(i).getCryptogramsCompleted());
-                i++;
-            }
-            System.out.println();
-            gameFinished = true;
-        } else {
+        char selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
+//        if (selection == '4') {
+//            players.sort();
+//            int i = 0;
+//            while (i < 10 && i < Players.allPlayers.size()) {
+//                System.out.print("\n" + Players.allPlayers.get(i).getUsername() + "\tCryptograms Completed = " + Players.allPlayers.get(i).getCryptogramsCompleted());
+//                i++;
+//            }
+//            System.out.println();
+//            gameFinished = true;
+
             Cryptogram cryptogram = generateCryptogram(selection);
             if (cryptogram.getPhrase().equals("ERROR")) {
                 System.out.print("No cryptograms saved." +
@@ -72,7 +71,9 @@ public class Game {
                         "\n\tCheck" +
                         "\n\tStats" +
                         "\n\tSave" +
+                        "\n\tHint" +
                         "\n\tSolve" +
+                        "\n\tTop Ten" +
                         "\n\tExit" +
                         "\n>");
                 String input = checkValidInput(reader.readLine(), "General");
@@ -132,7 +133,7 @@ public class Game {
                         break;
                     case "SAVE":
                         System.out.println("Saving cryptogram...");
-                        cryptogram.saveCryptogram(currentPlayer.getUsername(), currentAnswer, selection);
+                        cryptogram.saveCryptogram(currentPlayer.getUsername(), currentAnswer, selection, cryptogramsFile);
                         break;
                     case "SOLVE":
                         System.out.println("The solution to the cryptogram: " + cryptogram.encrypted + "\nis: " + cryptogram.phrase + "\nWould you like to play again? (Y/N)");
@@ -148,12 +149,54 @@ public class Game {
                             populateCurrentAnswer(cryptogram);
                         }
                         break;
+                    case "TOP TEN":
+                        printTopTenPlayers();
+                        break;
+                    case "HINT":
+                        getHint(cryptogram);
+                        break;
                     default:
                         System.out.println(input + " is not a valid input. Please enter a valid input");
                         break;
                 }
             }
         }
+
+    private void getHint(Cryptogram cryptogram) throws IOException {
+        Random rand = new Random();
+        int randomNumber = rand.nextInt(cryptogram.getPhrase().length());
+        StringTokenizer strTok = new StringTokenizer(cryptogram.getEncrypted());
+        String[] encryptTokens = new String[strTok.countTokens()];
+        int i=0;
+        while(strTok.hasMoreTokens()) {
+             encryptTokens[i] = strTok.nextToken();
+             i++;
+        }
+        Character c = cryptogram.phrase.charAt(randomNumber);
+        while(c == ' ' || currentAnswer.contains(c.toString())){
+            randomNumber = rand.nextInt(cryptogram.getPhrase().length());
+            c = cryptogram.phrase.charAt(randomNumber);
+        }
+
+        System.out.println("The letter selected is " + c);
+        for(int j=0; j<encryptTokens.length; j++){
+            Character currChar = encryptTokens[j].charAt(0);
+            if (cryptogram.getCryptogramAlphabet().get(c).equals(currChar.toString())) {
+                currentAnswer = enterLetter(cryptogram, currentAnswer, cryptogram.getCryptogramAlphabet().get(c), c);
+                break;
+            }
+
+        }
+    }
+
+    private void printTopTenPlayers() {
+        players.sort();
+        int j = 0;
+        while (j < 10 && j< Players.allPlayers.size()) {
+            System.out.print("\n" + Players.allPlayers.get(j).getUsername() + "\tCryptograms Completed = " + Players.allPlayers.get(j).getCryptogramsCompleted());
+            j++;
+        }
+        System.out.println();
     }
 
 
@@ -393,9 +436,9 @@ public class Game {
                     input = checkValidInput(input, constraint);
                 }
                 break;
-            case "1/2/3/4":
-                if (formattedInput != '1' && formattedInput != '2' && formattedInput != '3' && formattedInput != '4') {
-                    System.out.print(input + " is not a valid input. Please enter a valid input (1,2,3,4)\nEnter Choice > ");
+            case "1/2/3":
+                if (formattedInput != '1' && formattedInput != '2' && formattedInput != '3') {
+                    System.out.print(input + " is not a valid input. Please enter a valid input (1,2,3)\nEnter Choice > ");
                     input = reader.readLine();
                     input = checkValidInput(input, constraint);
                 }

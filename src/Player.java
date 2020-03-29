@@ -6,7 +6,7 @@ public class Player implements Comparable<Player> {
     private int accuracy;
     private int totalGuesses;
 
-    public Player(String username, int cryptogramsCompleted, int cryptogramsPlayed, int accuracy, int totalGuesses) {
+    public Player(String username, int cryptogramsPlayed,  int cryptogramsCompleted, int accuracy, int totalGuesses) {
         this.username = username;
         this.cryptogramsCompleted = cryptogramsCompleted;
         this.cryptogramsPlayed = cryptogramsPlayed;
