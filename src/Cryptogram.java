@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 public abstract class Cryptogram {
@@ -17,13 +18,27 @@ public abstract class Cryptogram {
     public Cryptogram() {
     }
 
-    public void getFrequencies(){
+    public int[] getFrequency() {
+        int[] letterFrequency = new int[26];
+        int counter = 0;
+        int i = 0;
+
+        for (String encryptedChar : cryptogramAlphabet.values()) {
+            counter = 0;
+            for (int j = 0; j < encrypted.length(); j++) {
+                if (encryptedChar.charAt(0) == (encrypted.charAt(j))) {
+                    counter++;
+                }
+            }
+            letterFrequency[i] = counter;
+            i++;
+        }
+        return letterFrequency;
     }
 
     public abstract String getEncrypted();
 
     public abstract String getPhrase();
-
     public abstract HashMap<Character, String> getCryptogramAlphabet();
 
     public ArrayList<Character> populateAlphabet(){
@@ -35,6 +50,8 @@ public abstract class Cryptogram {
         }
         return alphabet;
     }
+
+
 
     public void saveCryptogram(String playerName, String currentAnswer, char selection) throws IOException{
         File csvName = new File("resources/Cryptograms.csv");
