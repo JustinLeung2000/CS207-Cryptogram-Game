@@ -19,13 +19,13 @@ public class UnitTests {
         Player p = new Player("Bob", 0, 0, 0, 0);
         Game g = new Game(p, playersFile, cryptogramsFile, phraseFile);
         Cryptogram c = new LetterCryptogram("ABCCBA");
-        String currentAnswer  = "------";
+        String currentAnswer  = "- - - - - - ";
         char selectedChar = c.getEncrypted().charAt(0);
         String s = "" + selectedChar;
         Character changeToChar = 'Z';
 
         String result = g.enterLetter(c, currentAnswer, s, changeToChar);
-        Assert.assertThat(result, containsString("Z----Z"));
+        Assert.assertThat(result, containsString("Z - - - - Z "));
     }
 
     @Test
@@ -33,10 +33,10 @@ public class UnitTests {
         Player p = new Player("Bob", 0, 0, 0, 0);
         Game g = new Game(p, playersFile, cryptogramsFile, phraseFile);
         Cryptogram c = new LetterCryptogram("ABCCBA");
-        String currentAnswer  = "ABCCBA";
+        String currentAnswer  = "A B C C B A ";
 
         Assert.assertTrue(g.checkAnswer(currentAnswer, c));
-        Assert.assertEquals(1, p.getCryptogramsCompleted());
         Assert.assertEquals(1, p.getTotalGuesses());
     }
+
 }

@@ -11,14 +11,12 @@ public class Game {
     private String playersFile;
     private String cryptogramsFile;
     private String phraseFile;
-    //    private HashMap<Player, Cryptogram> playerGameMapping;
     private Player currentPlayer;
     private boolean gameFinished;
     private String currentAnswer;
     private Players players;
 
     public Game(Player currentPlayer, String playersFile, String cryptogramsFile, String phraseFile) {
-        //      this.playerGameMapping = playerGameMapping;
         this.playersFile = playersFile;
         this.phraseFile = phraseFile;
         this.cryptogramsFile = cryptogramsFile;
@@ -37,15 +35,6 @@ public class Game {
                 "3 to Load a Cryptogram\n" +
                 "\tEnter Choice >");
         char selection = checkValidInput(reader.readLine(), "1/2/3").charAt(0);
-//        if (selection == '4') {
-//            players.sort();
-//            int i = 0;
-//            while (i < 10 && i < Players.allPlayers.size()) {
-//                System.out.print("\n" + Players.allPlayers.get(i).getUsername() + "\tCryptograms Completed = " + Players.allPlayers.get(i).getCryptogramsCompleted());
-//                i++;
-//            }
-//            System.out.println();
-//            gameFinished = true;
 
             Cryptogram cryptogram = generateCryptogram(selection);
             if (cryptogram.getPhrase().equals("ERROR")) {
@@ -162,7 +151,8 @@ public class Game {
             }
         }
 
-    private void getHint(Cryptogram cryptogram) throws IOException {
+    /*Shows answer for random letter*/
+    public void getHint(Cryptogram cryptogram) throws IOException {
         Random rand = new Random();
         int randomNumber = rand.nextInt(cryptogram.getPhrase().length());
         StringTokenizer strTok = new StringTokenizer(cryptogram.getEncrypted());
@@ -179,8 +169,8 @@ public class Game {
         }
 
         System.out.println("The letter selected is " + c);
-        for(int j=0; j<encryptTokens.length; j++){
-            Character currChar = encryptTokens[j].charAt(0);
+        for (String encryptToken : encryptTokens) {
+            Character currChar = encryptToken.charAt(0);
             if (cryptogram.getCryptogramAlphabet().get(c).equals(currChar.toString())) {
                 currentAnswer = enterLetter(cryptogram, currentAnswer, cryptogram.getCryptogramAlphabet().get(c), c);
                 break;
@@ -200,6 +190,7 @@ public class Game {
     }
 
 
+    /*Logs in given a username*/
     private void logIn() throws IOException {
         System.out.print("Welcome to Friday Team 1's Cryptogram game!\n");
         if(currentPlayer.getUsername().equals("")){
@@ -228,6 +219,7 @@ public class Game {
         }
     }
 
+    /*Creates new player given a username*/
     private void createNewPlayer() throws IOException {
         System.out.print("Welcome new player!\nPlease enter your desired username:\n\tEnter Username >");
         String username = checkValidInput(reader.readLine(), "General");
@@ -246,6 +238,7 @@ public class Game {
         }
     }
 
+    /*Enters answer for selected letter*/
     public String enterLetter(Cryptogram cryptogram, String currentAnswer, String selectedLetter, Character changeLetterTo) throws IOException {
         if(currentAnswer.contains(changeLetterTo.toString())) {
             System.out.println("You have already entered this letter. Please select a different letter");
@@ -286,6 +279,7 @@ public class Game {
         return currentAnswer;
     }
 
+    /*Undoes selected letter's answer*/
     public String undoLetter(String currentAnswer) throws IOException {
         System.out.print("Please select the letter you wish to undo\n>");
         char response = checkValidInput(reader.readLine(), "General").charAt(0);
@@ -303,6 +297,7 @@ public class Game {
         return currentAnswer;
     }
 
+    /*Checks if answer is correct*/
     public boolean checkAnswer(String currentAnswer, Cryptogram cryptogram) {
         boolean correct = false;
         if (!currentAnswer.contains("-")) { //iff all empty spaces in the answer have been filled in by the player...
@@ -325,32 +320,6 @@ public class Game {
         }
         return correct;
     }
-
-
-    /*Placeholder*/
-    public String getHint() {
-        return "";
-    }
-
-
-    /*Placeholder*/
-    public void viewFrequencies() {
-
-    }
-
-    /*****/
-    /*Placeholder*/
-    public void showSolution() {
-
-    }
-
-//    public HashMap getPlayerGameMapping() {
-//        return playerGameMapping;
-//    }
-//
-//    public void setPlayerGameMapping(HashMap<Player, Cryptogram> playerGameMapping) {
-//        this.playerGameMapping = playerGameMapping;
-//    }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
